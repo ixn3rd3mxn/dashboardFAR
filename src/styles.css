@@ -1,1 +1,138 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap');
+@import 'flatpickr/dist/flatpickr.min.css';
+
+/* ── Flatpickr theme ────────────────────────────────────────── */
+.flatpickr-calendar {
+  background: #e8f8ff;
+  border: 1px solid #48CAE4;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 119, 182, 0.25);
+  font-family: 'Sarabun', 'Segoe UI', sans-serif;
+  font-size: 0.92rem;
+  width: auto;
+}
+.flatpickr-calendar.arrowTop::before { border-bottom-color: #48CAE4; }
+.flatpickr-calendar.arrowTop::after  { border-bottom-color: #e8f8ff; }
+.flatpickr-calendar.arrowBottom::before { border-top-color: #48CAE4; }
+.flatpickr-calendar.arrowBottom::after  { border-top-color: #e8f8ff; }
+
+.flatpickr-months {
+  background: #0096C7;
+  padding: 6px 0;
+  border-radius: 14px 14px 0 0;
+}
+.flatpickr-months .flatpickr-month { color: #fff; fill: #fff; }
+.flatpickr-current-month {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding-top: 2px;
+}
+
+.flatpickr-monthDropdown-month{
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000000;
+  padding-top: 2px;
+  border-radius: 18px;
+
+}
+
+
+.flatpickr-current-month input.cur-year {
+  color: #fff;
+  font-weight: 700;
+  font-family: 'Sarabun', sans-serif;
+}
+.flatpickr-current-month .numInputWrapper span.arrowUp::after  { border-bottom-color: #fff; }
+.flatpickr-current-month .numInputWrapper span.arrowDown::after { border-top-color: #fff; }
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month { fill: #fff; color: #fff; }
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg { fill: #CAF0F8; }
+
+.flatpickr-weekdays { background: #ADE8F4; padding: 4px 0; }
+span.flatpickr-weekday {
+  background: #ADE8F4;
+  color: #023E8A;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.flatpickr-innerContainer { padding: px; }
+
+.flatpickr-day {
+  color: #023E8A;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+  background: #90E0EF;
+  border-color: #48CAE4;
+  color: #023E8A;
+}
+.flatpickr-day.today {
+  border-color: #0096C7;
+  color: #0096C7;
+  font-weight: 700;
+}
+.flatpickr-day.today:hover {
+  background: #0096C7;
+  border-color: #0096C7;
+  color: #fff;
+}
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: #0077B6;
+  border-color: #0077B6;
+  color: #fff;
+  font-weight: 700;
+}
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay { color: #90E0EF; }
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  color: #c0ecf8;
+  cursor: not-allowed;
+}
+
+.fp-today-btn {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 2px 8px 8px;
+  padding: 6px 0;
+  background: #0096C7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.fp-today-btn:hover { background: #0077B6; }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #010814;
+  color: #CAF0F8;
+  font-family: 'Sarabun', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+}
