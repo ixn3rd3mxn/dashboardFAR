@@ -174,13 +174,13 @@
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  /* gap: 0rem; */
 }
 
 .control-label {
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   font-weight: 900;
-  color: var(--c-light);
+  color: #000000;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -200,7 +200,7 @@
 
 .control-input:focus {
   border-color: var(--c-base);
-  box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.25);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
 }
 
 .control-input option {
@@ -228,7 +228,7 @@
   border: 1px solid var(--c-mid-darkcustom);
   border-radius: 8px;
   color: var(--c-lightest);
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   font-size: 0.9rem;
   font-family: var(--font);
   cursor: pointer;
@@ -255,7 +255,7 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: #effcff;
+  background: #ffffff;
   border: 1px solid var(--c-mid-darkcustomX);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 150, 199, 0.18);
@@ -284,44 +284,40 @@
   font-weight: 700;
 }
 
-.fp-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-.fp-icon {
-  position: absolute;
-  left: 0.65rem;
-  color: var(--c-base);
-  pointer-events: none;
-  z-index: 1;
-  flex-shrink: 0;
-}
-.fp-input {
-  background: #effcff;
-  border: 1px solid var(--c-mid-darkcustom);
-  border-radius: 8px;
-  color: var(--c-lightest);
-  padding: 0.5rem 0.75rem 0.5rem 2.1rem;
-  font-size: 0.9rem;
+/* ── Taiga UI InputDate overrides ───────────────────────────── */
+.date-picker tui-textfield {
+  --tui-background-base: #effcff;
+  --tui-background-base-alt: #effcff;
+  --tui-border-normal: var(--c-mid-darkcustom);
+  --tui-border-focus: var(--c-base);
+  --tui-text-primary: var(--c-lightest);
+  --tui-text-secondary: var(--c-light);
+  --tui-text-tertiary: var(--c-base);
+  --tui-radius-m: 8px;
   font-family: var(--font);
-  font-weight: 600;
-  cursor: pointer;
+  width: 160px;
   transition: border-color 0.2s, box-shadow 0.2s;
-  width: 136px;
-  outline: none;
-  caret-color: transparent;
-}
-.fp-input:focus {
-  border-color: var(--c-base);
-  box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.25);
 }
 
-/* date input coloring fix */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(0.7) sepia(1) saturate(4) hue-rotate(175deg);
+
+
+/* ── Calendar today button ──────────────────────────────────── */
+.cal-today-btn {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 0 8px 8px;
+  padding: 6px 0;
+  background: #0096C7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s;
 }
+.cal-today-btn:hover { background: #0077B6; }
 
 /* ── Buttons ────────────────────────────────────────────────── */
 .btn {
@@ -656,7 +652,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   padding: 1rem;
   animation: fadeIn 0.18s ease;
 }
@@ -959,8 +955,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   transition: filter 0.15s, transform 0.15s;
 }
-.btn-confirm-action:hover { filter: brightness(1.1); }
-.btn-confirm-action:active { transform: scale(0.97); }
+.btn-confirm-action:hover:not(:disabled) { filter: brightness(1.1); }
+.btn-confirm-action:active:not(:disabled) { transform: scale(0.97); }
+.btn-confirm-action:disabled { background: #9ca3af; box-shadow: none; cursor: not-allowed; opacity: 0.6; }
 
 .btn-cancel-action {
   background: linear-gradient(135deg, #e6e6e65d, #ffffff);
@@ -1105,6 +1102,99 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .staff-item:hover { background: rgba(0, 119, 182, 0.15); }
 .staff-item-selected { background: rgba(0, 150, 199, 0.12); }
 
+.staff-status-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+}
+.badge-add    { background: rgba(6, 214, 160, 0.15); border-color: rgba(6, 214, 160, 0.5); color: #06D6A0; }
+.badge-remove { background: rgba(230, 57, 70, 0.15);  border-color: rgba(230, 57, 70, 0.5);  color: #E63946; }
+.badge-keep   { background: rgba(255,255,255, 0.06);  border-color: rgba(255,255,255, 0.15); color: var(--c-lighter); }
+
+.dialog-toasts {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: 250px;
+}
+
+.dialog-toast {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 10px 10px 10px;
+  border-radius: 10px;
+  font-size: 1rem;
+  border: 1.5px solid transparent;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  animation: toast-in 0.25s ease;
+  overflow: hidden;
+  pointer-events: all;
+}
+
+.dialog-toast::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  border-radius: 0 0 10px 10px;
+  animation: toast-progress 6s linear forwards;
+}
+
+.toast-add::after      { background: #06D6A0; }
+.toast-remove::after   { background: #E63946; }
+.toast-incident::after { background: #06D6A0; }
+
+.toast-add      { background: rgb(255, 255, 255);  border-color: rgba(6, 214, 160, 0.5);  color: #000000; }
+.toast-remove   { background: rgb(255, 255, 255);  border-color: rgba(230, 57, 70, 0.5);   color: #000000; }
+.toast-incident { background: rgb(255, 255, 255);  border-color: rgba(6, 214, 160, 0.5);   color: #000000; }
+
+.toast-header      { font-weight: 900; font-size: 0.9rem;}
+.toast-name        { font-size: 0.8rem; padding-left: 4px; }
+.toast-detail-row  { display: flex; gap: 8px; font-size: 0.8rem; padding-left: 4px; }
+.toast-label       { opacity: 0.7; min-width: 48px; }
+.toast-time        { font-size: 0.9rem; opacity: 0.7; font-weight: 900; text-align: right; }
+
+.toast-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.4;
+  cursor: pointer;
+  padding: 2px 4px;
+  pointer-events: all;
+}
+.toast-close:hover { opacity: 0.9; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 .staff-checkbox {
   width: 20px;
   height: 20px;
@@ -1143,3 +1233,152 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-bottom: 1rem;
 }
 .selected-count strong { color: var(--c-base); font-size: 1rem; }
+
+/* ═══════════════════════════════════════════════════════════════
+   HISTORY BUTTON & DIALOG
+═══════════════════════════════════════════════════════════════ */
+.btn-history {
+  position: fixed;
+  bottom: 6px;
+  right: 50px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #0077B6 0%, #023E8A 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 119, 182, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.btn-history:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(0, 119, 182, 0.55); }
+.btn-history:active { transform: scale(0.97); }
+
+.history-dialog { max-width: 580px; }
+
+.history-empty {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--c-lighter);
+  font-size: 0.9rem;
+}
+
+.history-table-wrap {
+  overflow-x: auto;
+  max-height: 55vh;
+  overflow-y: auto;
+  margin-top: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 119, 182, 0.15);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.history-table thead {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #0077B6, #023E8A);
+  color: #fff;
+}
+
+.history-table th {
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.history-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(0, 119, 182, 0.08);
+  color: #222;
+}
+
+.history-table tbody tr:last-child td { border-bottom: none; }
+.history-table tbody tr:hover { background: rgba(0, 150, 199, 0.06); }
+
+.col-num  { color: var(--c-lighter); font-size: 0.8rem; text-align: center; width: 2rem; }
+.col-time { font-weight: 700; white-space: nowrap; color: var(--c-dark); }
+
+.history-total {
+  margin-top: 0.75rem;
+  text-align: right;
+  font-size: 0.82rem;
+  color: var(--c-lighter);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INFO BUTTON & DIALOG
+═══════════════════════════════════════════════════════════════ */
+.btn-info {
+  position: fixed;
+  bottom: 6px;
+  right: 6px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(75, 85, 99, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.btn-info:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(75, 85, 99, 0.55); }
+.btn-info:active { transform: scale(0.97); }
+
+.info-dialog { max-width: 560px; }
+
+.info-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.info-section { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.info-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-left: 1.6rem;
+}
+.info-list li {
+  font-size: 0.88rem;
+  color: #333;
+  line-height: 1.5;
+  position: relative;
+}
+.info-list li::before {
+  content: '–';
+  position: absolute;
+  left: -1.1rem;
+  color: #000000;
+}

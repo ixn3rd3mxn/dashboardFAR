@@ -39,10 +39,32 @@ export interface ShiftAssignmentCreate {
   rescue_ids: number[];
 }
 
+export interface SaveResponse {
+  message: string;
+  saved_at: string;
+}
+
+export interface ChangeEntry {
+  added: number[];
+  removed: number[];
+  saved_at: string;
+}
+
 export interface ShiftAssignmentResult {
   date: string;
   shift_id: number;
   rescue_ids: number[];
+  saved_at?: string;
+  changes?: ChangeEntry[];
+}
+
+export interface IncidentRecord {
+  date: string;
+  shift_id: number;
+  type: string;
+  subtype: string | null;
+  level: string | null;
+  saved_at?: string;
 }
 
 export type IncidentStep = '' | 'type' | 'subtype' | 'level' | 'confirm';

@@ -4,18 +4,23 @@ import {
   signal,
   computed,
   inject,
-  viewChild,
-  ElementRef,
   afterNextRender,
   OnDestroy,
+  viewChild,
 } from '@angular/core';
-import flatpickr from 'flatpickr';
-import type { Instance as FlatpickrInstance } from 'flatpickr/dist/types/instance';
-import { Thai } from 'flatpickr/dist/l10n/th.js';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TuiDay, TuiYear } from '@taiga-ui/cdk';
+import { TUI_MONTHS, TUI_SHORT_WEEK_DAYS, TuiScrollbar, TuiTextfield, TuiTextfieldOptionsDirective } from '@taiga-ui/core';
+import { TuiInputDate } from '@taiga-ui/kit';
+import { TuiInputDateDirective } from '@taiga-ui/kit/components/input-date';
+import { tuiDateFormatProvider } from '@taiga-ui/core/tokens';
+import { of } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import type {
   Rescue,
   ShiftWork,
+  ChangeEntry,
+  IncidentRecord,
   IncidentSummary,
   IncidentStep,
 } from '../models/types';
@@ -25,14 +30,26 @@ import type {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, TuiTextfield, TuiTextfieldOptionsDirective, TuiInputDate],
+  providers: [
+    tuiDateFormatProvider({ mode: 'DMY', separator: '/' }),
+    {
+      provide: TUI_MONTHS,
+      useValue: of(['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'] as const),
+    },
+    {
+      provide: TUI_SHORT_WEEK_DAYS,
+      useValue: of(['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'] as const),
+    },
+  ],
 })
 export class Dashboard implements OnDestroy {
   private api = inject(ApiService);
   private clockInterval?: ReturnType<typeof setInterval>;
-  private refreshInterval?: ReturnType<typeof setInterval>;
-  private dialogPollInterval?: ReturnType<typeof setInterval>;
-  private fpInstance?: FlatpickrInstance;
-  private fpInput = viewChild<ElementRef<HTMLInputElement>>('fpInput');
+  private eventSource?: EventSource;
+  private mainReady = false;
+  private prevIncidentTotal = -1;
+  private beYearObserver?: MutationObserver;
 
   // ── Time ──────────────────────────────────────────────────────────────────
   currentTime = signal<Date>(new Date());
@@ -58,8 +75,14 @@ export class Dashboard implements OnDestroy {
   });
 
   // ── Date picker ──────────────────────────────────────────────────────────
-  selectedDate = signal<string>(this.todayISO());
+  readonly minDay = new TuiDay(2026, 2, 1);   // March 1, 2026  (month is 0-indexed)
+  readonly maxDay = new TuiDay(2031, 11, 31);  // December 31, 2031
 
+  readonly dateControl = new FormControl<TuiDay | null>(TuiDay.currentLocal());
+
+  private readonly inputDateDir = viewChild(TuiInputDateDirective);
+
+  selectedDate = signal<string>(this.todayISO());
 
   // ── Shifts ────────────────────────────────────────────────────────────────
   shifts = signal<ShiftWork[]>([]);
@@ -80,6 +103,13 @@ export class Dashboard implements OnDestroy {
   selectedSubtype = signal<string>('');
   selectedLevel = signal<string>('');
 
+  // ── Info dialog ───────────────────────────────────────────────────────────
+  infoOpen = signal<boolean>(false);
+
+  // ── History dialog ────────────────────────────────────────────────────────
+  historyOpen = signal<boolean>(false);
+  incidentHistory = signal<IncidentRecord[]>([]);
+
   // ── Staff ─────────────────────────────────────────────────────────────────
   rescuers = signal<Rescue[]>([]);
   staffDialogOpen = signal<boolean>(false);
@@ -88,6 +118,13 @@ export class Dashboard implements OnDestroy {
   selectedRescueIds = signal<number[]>([]);
   assignedRescuers = signal<Rescue[]>([]);
   dialogBaseIds = signal<number[]>([]);
+  dialogToasts = signal<{ id: number; names: string[]; type: 'add' | 'remove'; time: string; own: boolean }[]>([]);
+  incidentToasts = signal<{ id: number; incType: string; subtype: string | null; level: string | null; time: string; own: boolean }[]>([]);
+  allToasts = computed(() =>
+    [...this.dialogToasts().map((t) => ({ ...t, kind: 'dialog' as const })), ...this.incidentToasts().map((t) => ({ ...t, kind: 'incident' as const }))]
+      .sort((a, b) => a.time.localeCompare(b.time)),
+  );
+  private toastIdSeq = 0;
 
   filteredRescuers = computed(() => {
     const q = this.staffSearchQuery().toLowerCase().trim();
@@ -119,58 +156,58 @@ export class Dashboard implements OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   constructor() {
-    afterNextRender(() => {
-      this.clockInterval = setInterval(() => this.currentTime.set(new Date()), 1000);
-      this.refreshInterval = setInterval(() => {
+    // แสดงปีเป็น พ.ศ. ใน calendar header (CE + 543)
+    Object.defineProperty(TuiYear.prototype, 'formattedYear', {
+      get(this: TuiYear) { return String(this.year + 543).padStart(4, '0'); },
+      configurable: true,
+    });
+
+    this.dateControl.valueChanges.subscribe((day) => {
+      if (day) {
+        const iso = `${day.year}-${String(day.month + 1).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`;
+        this.selectedDate.set(iso);
+        this.mainReady = false;
+        this.prevIncidentTotal = -1;
         this.loadSummary();
         this.loadStaffAssignment();
-      }, 10_000);
-
-      const el = this.fpInput()?.nativeElement;
-      if (el) {
-        const setBEYear = (fp: FlatpickrInstance) => {
-          if (fp.currentYearElement) {
-            fp.currentYearElement.value = String(fp.currentYear + 543);
-            fp.currentYearElement.readOnly = true;
-          }
-        };
-        this.fpInstance = flatpickr(el, {
-          locale: Thai,
-          formatDate: (date: Date) => {
-            const d = String(date.getDate()).padStart(2, '0');
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            return `${d}/${m}/${date.getFullYear() + 543}`;
-          },
-          parseDate: (str: string) => {
-            const [d, m, y] = str.split('/').map(Number);
-            return new Date(y - 543, m - 1, d);
-          },
-          defaultDate: (() => { const [y, m, d] = this.selectedDate().split('-').map(Number); return new Date(y, m - 1, d); })(),
-          minDate: new Date('2026-03-01'),
-          maxDate: new Date('2031-12-31'),
-          onChange: (dates: Date[]) => {
-            if (dates[0]) {
-              const d = dates[0];
-              const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-              this.selectedDate.set(iso);
-              this.loadSummary();
-              this.loadStaffAssignment();
-            }
-          },
-          onReady: (_: Date[], __: string, fp: FlatpickrInstance) => {
-            setBEYear(fp);
-            const btn = document.createElement('button');
-            btn.textContent = 'วันนี้';
-            btn.type = 'button';
-            btn.className = 'fp-today-btn';
-            btn.addEventListener('click', () => { fp.setDate(new Date(), true); fp.close(); });
-            fp.calendarContainer.appendChild(btn);
-          },
-          onOpen:        (_: Date[], __: string, fp: FlatpickrInstance) => setBEYear(fp),
-          onYearChange:  (_: Date[], __: string, fp: FlatpickrInstance) => setBEYear(fp),
-          onMonthChange: (_: Date[], __: string, fp: FlatpickrInstance) => setBEYear(fp),
-        }) as FlatpickrInstance;
       }
+    });
+
+    afterNextRender(() => {
+      this.clockInterval = setInterval(() => this.currentTime.set(new Date()), 1000);
+
+      this.eventSource = this.api.subscribeToEvents();
+      this.eventSource.addEventListener('incident_created', () => {
+        this.loadSummary();
+        this.loadStaffAssignment();
+        if (this.historyOpen()) {
+          this.api.getIncidentList(this.selectedDate(), this.selectedShiftId()).subscribe((list) => {
+            this.incidentHistory.set(list);
+          });
+        }
+      });
+      this.eventSource.addEventListener('staff_updated', () => {
+        this.loadSummary();
+        if (this.staffDialogOpen()) {
+          this.pollDialogState();
+        } else {
+          this.loadStaffAssignment();
+        }
+      });
+
+      // แปลง ค.ศ. → พ.ศ. ใน year picker grid ({{ item }} ไม่ใช้ formattedYear)
+      const convertYears = () => {
+        this.beYearObserver!.disconnect();
+        document.querySelectorAll('tui-calendar-year .t-cell').forEach((cell) => {
+          const year = parseInt((cell as HTMLElement).textContent?.trim() ?? '', 10);
+          if (!isNaN(year) && year > 1900 && year < 2543) {
+            (cell as HTMLElement).textContent = String(year + 543);
+          }
+        });
+        this.beYearObserver!.observe(document.body, { childList: true, subtree: true });
+      };
+      this.beYearObserver = new MutationObserver(convertYears);
+      this.beYearObserver.observe(document.body, { childList: true, subtree: true });
 
       this.loadShifts();
       this.loadRescuers();
@@ -180,19 +217,57 @@ export class Dashboard implements OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.clockInterval);
-    clearInterval(this.refreshInterval);
-    this.stopDialogPoll();
-    this.fpInstance?.destroy();
+    this.eventSource?.close();
+    this.beYearObserver?.disconnect();
   }
 
-  private startDialogPoll(): void {
-    this.stopDialogPoll();
-    this.dialogPollInterval = setInterval(() => this.pollDialogState(), 3_000);
+  setToday(): void {
+    this.inputDateDir()?.setDate(TuiDay.currentLocal());
   }
 
-  private stopDialogPoll(): void {
-    clearInterval(this.dialogPollInterval);
-    this.dialogPollInterval = undefined;
+  private groupByChangelog(
+    ids: number[],
+    field: 'added' | 'removed',
+    changes: ChangeEntry[] | undefined,
+    fallback?: string,
+  ): Map<string, number[]> {
+    const grouped = new Map<string, number[]>();
+    for (const id of ids) {
+      let time = fallback ?? this.nowHHMMSS();
+      if (changes) {
+        for (let i = changes.length - 1; i >= 0; i--) {
+          if (changes[i][field].includes(id)) { time = changes[i].saved_at; break; }
+        }
+      }
+      grouped.set(time, [...(grouped.get(time) ?? []), id]);
+    }
+    return grouped;
+  }
+
+  private nowHHMMSS(): string {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+  }
+
+  private addIncidentToast(incType: string, subtype: string | null, level: string | null, own: boolean, time?: string): void {
+    const id = ++this.toastIdSeq;
+    this.incidentToasts.update((list) => [...list, { id, incType, subtype, level, time: time ?? this.nowHHMMSS(), own }].sort((a, b) => a.time.localeCompare(b.time)));
+    setTimeout(() => {
+      this.incidentToasts.update((list) => list.filter((t) => t.id !== id));
+    }, 6000);
+  }
+
+  private addToast(names: string[], type: 'add' | 'remove', own = false, time?: string): void {
+    const id = ++this.toastIdSeq;
+    this.dialogToasts.update((list) => [...list, { id, names, type, time: time ?? this.nowHHMMSS(), own }].sort((a, b) => a.time.localeCompare(b.time)));
+    setTimeout(() => {
+      this.dialogToasts.update((list) => list.filter((t) => t.id !== id));
+    }, 6000);
+  }
+
+  dismissToast(id: number): void {
+    this.incidentToasts.update((list) => list.filter((t) => t.id !== id));
+    this.dialogToasts.update((list) => list.filter((t) => t.id !== id));
   }
 
   private pollDialogState(): void {
@@ -201,6 +276,23 @@ export class Dashboard implements OnDestroy {
       .subscribe((result) => {
         const latestIds: number[] = result.rescue_ids;
         const base = this.dialogBaseIds();
+
+        const externalAdded = latestIds.filter((id) => !base.includes(id));
+        const externalRemoved = base.filter((id) => !latestIds.includes(id));
+
+        if (externalAdded.length > 0) {
+          for (const [time, ids] of this.groupByChangelog(externalAdded, 'added', result.changes, result.saved_at)) {
+            const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+            this.addToast(names, 'add', false, time);
+          }
+        }
+        if (externalRemoved.length > 0) {
+          for (const [time, ids] of this.groupByChangelog(externalRemoved, 'removed', result.changes, result.saved_at)) {
+            const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+            this.addToast(names, 'remove', false, time);
+          }
+        }
+
         const selected = this.selectedRescueIds();
         const userAdded = selected.filter((id) => !base.includes(id));
         const userRemoved = new Set(base.filter((id) => !selected.includes(id)));
@@ -246,15 +338,46 @@ export class Dashboard implements OnDestroy {
   loadSummary(): void {
     this.api
       .getIncidentSummary(this.selectedDate(), this.selectedShiftId())
-      .subscribe((data) => this.summary.set(data));
+      .subscribe((data) => {
+        const prevTotal = this.prevIncidentTotal;
+        const newTotal = data.total;
+        this.summary.set(data);
+        if (prevTotal !== -1 && newTotal > prevTotal) {
+          this.api.getIncidentList(this.selectedDate(), this.selectedShiftId())
+            .subscribe((incidents: IncidentRecord[]) => {
+              for (const inc of incidents.slice(prevTotal)) {
+                this.addIncidentToast(inc.type, inc.subtype, inc.level, false, inc.saved_at);
+              }
+            });
+        }
+        this.prevIncidentTotal = newTotal;
+      });
   }
 
   loadStaffAssignment(): void {
     this.api
       .getShiftAssignment(this.selectedDate(), this.selectedShiftId())
       .subscribe((result) => {
-        const ids = result.rescue_ids;
+        const ids: number[] = result.rescue_ids;
+        if (this.mainReady && !this.staffDialogOpen() && !this.staffConfirmOpen()) {
+          const prev = this.assignedRescuers().map((r) => r.rescue_id);
+          const added = ids.filter((id) => !prev.includes(id));
+          const removed = prev.filter((id) => !ids.includes(id));
+          if (added.length > 0) {
+            for (const [time, ids] of this.groupByChangelog(added, 'added', result.changes, result.saved_at)) {
+              const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+              this.addToast(names, 'add', false, time);
+            }
+          }
+          if (removed.length > 0) {
+            for (const [time, ids] of this.groupByChangelog(removed, 'removed', result.changes, result.saved_at)) {
+              const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+              this.addToast(names, 'remove', false, time);
+            }
+          }
+        }
         this.assignedRescuers.set(this.rescuers().filter((r) => ids.includes(r.rescue_id)));
+        this.mainReady = true;
       });
   }
 
@@ -262,6 +385,8 @@ export class Dashboard implements OnDestroy {
 
 onShiftChange(event: Event): void {
     this.selectedShiftId.set(Number((event.target as HTMLSelectElement).value));
+    this.mainReady = false;
+    this.prevIncidentTotal = -1;
     this.loadSummary();
     this.loadStaffAssignment();
   }
@@ -269,6 +394,8 @@ onShiftChange(event: Event): void {
   selectShift(id: number): void {
     this.selectedShiftId.set(id);
     this.shiftDropdownOpen.set(false);
+    this.mainReady = false;
+    this.prevIncidentTotal = -1;
     this.loadSummary();
     this.loadStaffAssignment();
   }
@@ -288,6 +415,21 @@ onShiftChange(event: Event): void {
     this.selectedSubtype.set('');
     this.selectedLevel.set('');
   }
+
+  // ── Info dialog ───────────────────────────────────────────────────────────
+
+  openInfoDialog(): void { this.infoOpen.set(true); }
+  closeInfoDialog(): void { this.infoOpen.set(false); }
+
+  // ── History dialog ────────────────────────────────────────────────────────
+
+  openHistoryDialog(): void {
+    this.api.getIncidentList(this.selectedDate(), this.selectedShiftId()).subscribe((list) => {
+      this.incidentHistory.set(list);
+      this.historyOpen.set(true);
+    });
+  }
+  closeHistoryDialog(): void { this.historyOpen.set(false); }
 
   selectIncidentType(type: string): void {
     this.selectedIncidentType.set(type);
@@ -311,16 +453,21 @@ onShiftChange(event: Event): void {
   }
 
   confirmIncident(): void {
+    const incType = this.selectedIncidentType();
+    const subtype = this.selectedSubtype() || null;
+    const level = this.selectedLevel() || null;
     this.api
       .createIncident({
         date: this.selectedDate(),
         shift_id: this.selectedShiftId(),
-        type: this.selectedIncidentType(),
-        subtype: this.selectedSubtype() || null,
-        level: this.selectedLevel() || null,
+        type: incType,
+        subtype,
+        level,
       })
-      .subscribe(() => {
+      .subscribe((res) => {
+        this.addIncidentToast(incType, subtype, level, true, res.saved_at);
         this.closeIncidentDialog();
+        this.prevIncidentTotal = -1;
         this.loadSummary();
       });
   }
@@ -333,13 +480,11 @@ onShiftChange(event: Event): void {
     this.selectedRescueIds.set(ids);
     this.staffSearchQuery.set('');
     this.staffDialogOpen.set(true);
-    this.startDialogPoll();
   }
 
   closeStaffDialog(): void {
     this.staffDialogOpen.set(false);
     this.staffSearchQuery.set('');
-    this.stopDialogPoll();
   }
 
   onStaffSearch(event: Event): void {
@@ -348,6 +493,15 @@ onShiftChange(event: Event): void {
 
   isSelected(id: number): boolean {
     return this.selectedRescueIds().includes(id);
+  }
+
+  getItemStatus(id: number): 'add' | 'remove' | 'keep' | null {
+    const inBase = this.dialogBaseIds().includes(id);
+    const selected = this.selectedRescueIds().includes(id);
+    if (selected && !inBase) return 'add';
+    if (!selected && inBase) return 'remove';
+    if (selected && inBase) return 'keep';
+    return null;
   }
 
   toggleRescuer(id: number): void {
@@ -377,10 +531,11 @@ onShiftChange(event: Event): void {
   cancelStaffConfirm(): void {
     this.staffConfirmOpen.set(false);
     this.staffDialogOpen.set(true);
-    this.startDialogPoll();
   }
 
   saveStaffAssignment(): void {
+    const toAddNames = this.staffToAdd().map((r) => r.rescue_name);
+    const toRemoveNames = this.staffToRemove().map((r) => r.rescue_name);
     const removeIds = new Set(this.staffToRemove().map((r) => r.rescue_id));
     const addIds = this.staffToAdd().map((r) => r.rescue_id);
     this.api
@@ -396,9 +551,11 @@ onShiftChange(event: Event): void {
             shift_id: this.selectedShiftId(),
             rescue_ids: mergedIds,
           })
-          .subscribe(() => {
+          .subscribe((res) => {
             this.staffConfirmOpen.set(false);
-            this.stopDialogPoll();
+            this.mainReady = false;
+            if (toAddNames.length > 0) this.addToast(toAddNames, 'add', true, res.saved_at);
+            if (toRemoveNames.length > 0) this.addToast(toRemoveNames, 'remove', true, res.saved_at);
             this.loadStaffAssignment();
           });
       });

@@ -30,15 +30,18 @@
   ════════════════════════════════════════════════════════════════ -->
   <div class="controls-bar">
     <div class="controls-left">
-      <div class="control-group">
-        <label class="control-label" for="fp-date">วันที่</label>
-        <div class="fp-wrap">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="fp-icon">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <input #fpInput id="fp-date" type="text" class="fp-input" readonly aria-label="เลือกวันที่" />
-        </div>
+      <div class="control-group date-picker">
+                <label class="control-label" for="date-input">วันที่</label>
+        <tui-textfield [tuiTextfieldCleaner]="false" tuiTextfieldSize="s">
+          <!-- <label tuiLabel>วันที่</label> -->
+          <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" readonly />
+          <ng-template tuiTextfieldDropdown>
+            <tui-calendar [min]="minDay" [max]="maxDay" >
+            <!-- <tui-calendar> -->
+            <button type="button" class="cal-today-btn" (click)="setToday()">วันนี้</button>
+            </tui-calendar>
+          </ng-template>
+        </tui-textfield>
       </div>
 
       <div class="control-group">
@@ -434,6 +437,108 @@
 }
 
 <!-- ── Staff: เลือกเจ้าหน้าที่ ──────────────────────────────────────── -->
+@if (historyOpen()) {
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title" (click)="closeHistoryDialog()">
+    <div class="dialog history-dialog" (click)="$event.stopPropagation()">
+      <button class="dialog-close-btn" (click)="closeHistoryDialog()" aria-label="ปิด">✕</button>
+      <h2 id="dlg-history-title" class="dialog-title">ประวัติบันทึกเหตุ</h2>
+      <p class="dialog-desc">เวร{{ selectedShiftName() }} · {{ selectedDate() }}</p>
+
+      @if (incidentHistory().length === 0) {
+        <div class="history-empty">ยังไม่มีข้อมูลในเวรนี้</div>
+      } @else {
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ประเภท</th>
+                <th>ช่องทาง</th>
+                <th>ระดับ</th>
+                <th>เวลา</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of incidentHistory(); track $index) {
+                <tr>
+                  <td class="col-num">{{ $index + 1 }}</td>
+                  <td>{{ row.type }}</td>
+                  <td>{{ row.subtype ?? '–' }}</td>
+                  <td>{{ row.level ?? '–' }}</td>
+                  <td class="col-time">{{ row.saved_at ?? '–' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="history-total">รวม {{ incidentHistory().length }} รายการ</div>
+      }
+    </div>
+  </div>
+}
+
+@if (infoOpen()) {
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title" (click)="closeInfoDialog()">
+    <div class="dialog info-dialog" (click)="$event.stopPropagation()">
+      <button class="dialog-close-btn" (click)="closeInfoDialog()" aria-label="ปิด">✕</button>
+      <h2 id="dlg-info-title" class="dialog-title">ข้อมูลและวิธีใช้งาน</h2>
+
+      <div class="info-sections">
+        <section class="info-section">
+          <h3 class="info-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            การเลือกวันและเวร
+          </h3>
+          <ul class="info-list">
+            <li>กดที่ <strong>วันที่</strong> เพื่อเปลี่ยนวันที่ต้องการดูข้อมูล</li>
+            <li>กดที่ <strong>ชื่อเวร</strong> (เช้า / บ่าย / ดึก) เพื่อสลับเวร</li>
+            <li>เวร <strong>บ่าย</strong> และ <strong>ดึก</strong> ใช้รายชื่อเจ้าหน้าที่ชุดเดียวกัน</li>
+            <li>เวลาเวร: เช้า 08:30–16:30 · บ่าย 16:30–00.00 · ดึก 00:00–08:30</li>
+          </ul>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            กำหนดเจ้าหน้าที่
+          </h3>
+          <ul class="info-list">
+            <li>กดปุ่ม <strong>กำหนดเจ้าหน้าที่</strong> เพื่อเลือกผู้ปฏิบัติงานในเวรนั้น</li>
+            <li>สามารถค้นหาชื่อได้ในช่องค้นหา และเลือกได้หลายคน</li>
+            <li>กดปุ่ม <strong>บันทึก</strong> เพื่อยืนยัน หรือ <strong>ยกเลิก</strong> เพื่อออกโดยไม่บันทึก</li>
+            <li>รายชื่อที่เลือกจะแสดงในตาราง <strong>เจ้าหน้าที่ปฏิบัติงาน</strong></li>
+          </ul>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            บันทึกเหตุ
+          </h3>
+          <ul class="info-list">
+            <li>กดปุ่ม <strong>บันทึกเหตุ</strong> เพื่อเปิดฟอร์มบันทึกเหตุการณ์</li>
+            <li>เลือก <strong>ประเภทเหตุ</strong> จากนั้นเลือก <strong>ช่องทาง</strong> และ <strong>ระดับความรุนแรง</strong></li>
+            <li>กดยืนยันเพื่อบันทึก ระบบจะแสดงการแจ้งเตือนทางมุมขวาล่าง</li>
+            <li>หากมีผู้ใช้งานอื่นบันทึกพร้อมกัน จะมีการแจ้งเตือนปรากฏขึ้นเช่นกัน</li>
+          </ul>
+        </section>
+
+        <section class="info-section">
+          <h3 class="info-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            แดชบอร์ดสรุปเหตุ
+          </h3>
+          <ul class="info-list">
+            <li><strong>ยอดรวม</strong> แสดงจำนวนเหตุทั้งหมดในเวรที่เลือก</li>
+            <li><strong>ตารางสรุป</strong> แสดงจำนวนแยกตามประเภทเหตุและช่องทาง</li>
+            <li>ข้อมูลจะอัปเดตอัตโนมัติทุก 10 วินาที หรือหลังบันทึกเหตุทันที</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+}
+
 @if (staffDialogOpen()) {
   <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title" (click)="closeStaffDialog()">
     <div class="dialog dialog-wide" (click)="$event.stopPropagation()">
@@ -484,6 +589,18 @@
               @if (isSelected(r.rescue_id)) { ✓ }
             </div>
             <span class="staff-name">{{ r.rescue_name }}</span>
+            @if (getItemStatus(r.rescue_id); as status) {
+              <span
+                class="staff-status-badge"
+                [class.badge-add]="status === 'add'"
+                [class.badge-remove]="status === 'remove'"
+                [class.badge-keep]="status === 'keep'"
+              >
+                @if (status === 'add') { เพิ่ม }
+                @if (status === 'remove') { ลบ }
+                @if (status === 'keep') { คงเดิม }
+              </span>
+            }
           </div>
         }
         @if (filteredRescuers().length === 0) {
@@ -496,7 +613,11 @@
       </div>
 
       <div class="dialog-actions">
-        <button class="btn-confirm-action" (click)="confirmStaffSelection()">ตกลง</button>
+        <button
+          class="btn-confirm-action"
+          (click)="confirmStaffSelection()"
+          [disabled]="staffToAdd().length === 0 && staffToRemove().length === 0"
+        >ตกลง</button>
         <button class="btn-clear-all" (click)="clearSelected(searchDiv)" aria-label="ล้างรายชื่อทั้งหมด" title="ล้างการเลือกทั้งหมด">
           ล้างการเลือกทั้งหมด
         </button>
@@ -507,7 +628,7 @@
 
 <!-- ── Staff: ยืนยัน ─────────────────────────────────────────────────── -->
 @if (staffConfirmOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title" (click)="cancelStaffConfirm()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title" (click)="closeStaffDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="cancelStaffConfirm()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-confirm-title" class="dialog-title">ยืนยันการกำหนดเจ้าหน้าที่</h2>
@@ -556,3 +677,51 @@
     </div>
   </div>
 }
+
+
+
+@if (allToasts().length > 0) {
+  <div class="dialog-toasts" aria-live="polite" aria-atomic="false">
+    @for (t of allToasts(); track t.id) {
+      @if (t.kind === 'incident') {
+        <div class="dialog-toast toast-incident">
+          <button class="toast-close" (click)="dismissToast(t.id)" aria-label="ปิด">✕</button>
+          <div class="toast-header">{{ t.own ? 'คุณได้บันทึกเหตุสำเร็จ' : 'ผู้ใช้งานอื่น บันทึกเหตุสำเร็จ' }}</div>
+          <div class="toast-detail-row"><span class="toast-label">ประเภท</span><span>{{ t.incType }}</span></div>
+          @if (t.subtype) {
+            <div class="toast-detail-row"><span class="toast-label">ช่องทาง</span><span>{{ t.subtype }}</span></div>
+          }
+          @if (t.level) {
+            <div class="toast-detail-row"><span class="toast-label">ระดับ</span><span>{{ t.level }}</span></div>
+          }
+          <div class="toast-time">{{ t.time }}</div>
+        </div>
+      } @else {
+        <div class="dialog-toast" [class.toast-add]="t.type === 'add'" [class.toast-remove]="t.type === 'remove'">
+          <button class="toast-close" (click)="dismissToast(t.id)" aria-label="ปิด">✕</button>
+          <div class="toast-header">{{ t.own ? ('คุณ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ') : ('ผู้ใช้งานอื่น ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ') }}</div>
+          @for (name of t.names; track name) {
+            <div class="toast-name">{{ name }}</div>
+          }
+          <div class="toast-time">{{ t.time }}</div>
+        </div>
+      }
+    }
+  </div>
+}
+
+<button class="btn-history" (click)="openHistoryDialog()" aria-label="ดูประวัติบันทึกเหตุ">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <polyline points="12 8 12 12 14 14"/>
+    <path d="M3.05 11a9 9 0 1 1 .5 4"/>
+    <polyline points="3 7 3 11 7 11"/>
+  </svg>
+</button>
+
+<button class="btn-info" (click)="openInfoDialog()" aria-label="ข้อมูลและวิธีใช้งาน">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+  <circle cx="12" cy="12" r="10"/>
+  <line x1="12" y1="10" x2="12" y2="17"/>
+  <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"/>
+  </svg>
+</button>

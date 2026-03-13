@@ -5,12 +5,14 @@ import type {
   Rescue,
   ShiftWork,
   IncidentCreate,
+  IncidentRecord,
   IncidentSummary,
+  SaveResponse,
   ShiftAssignmentCreate,
   ShiftAssignmentResult,
 } from '../models/types';
 
-const API_URL = 'http://192.168.1.147:8000';
+const API_URL = 'http://192.168.1.63:8000';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -24,8 +26,8 @@ export class ApiService {
     return this.http.get<ShiftWork[]>(`${API_URL}/shiftwork`);
   }
 
-  createIncident(data: IncidentCreate): Observable<unknown> {
-    return this.http.post(`${API_URL}/incident`, data);
+  createIncident(data: IncidentCreate): Observable<SaveResponse> {
+    return this.http.post<SaveResponse>(`${API_URL}/incident`, data);
   }
 
   getIncidentSummary(date: string, shiftId: number): Observable<IncidentSummary> {
@@ -34,8 +36,18 @@ export class ApiService {
     });
   }
 
-  saveShiftAssignment(data: ShiftAssignmentCreate): Observable<unknown> {
-    return this.http.post(`${API_URL}/shift-assignment`, data);
+  subscribeToEvents(): EventSource {
+    return new EventSource(`${API_URL}/events`);
+  }
+
+  getIncidentList(date: string, shiftId: number): Observable<IncidentRecord[]> {
+    return this.http.get<IncidentRecord[]>(`${API_URL}/incident/list`, {
+      params: { date, shift_id: shiftId },
+    });
+  }
+
+  saveShiftAssignment(data: ShiftAssignmentCreate): Observable<SaveResponse> {
+    return this.http.post<SaveResponse>(`${API_URL}/shift-assignment`, data);
   }
 
   getShiftAssignment(date: string, shiftId: number): Observable<ShiftAssignmentResult> {
