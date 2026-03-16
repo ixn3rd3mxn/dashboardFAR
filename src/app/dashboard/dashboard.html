@@ -258,7 +258,7 @@
 
 <!-- ── Incident: เลือกประเภท ─────────────────────────────────────────── -->
 @if (incidentStep() === 'type') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-type-title" (click)="closeIncidentDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-type-title">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-type-title" class="dialog-title">บันทึกเหตุ</h2>
@@ -309,7 +309,7 @@
 
 <!-- ── Incident: เลือกช่องทาง ────────────────────────────────────────── -->
 @if (incidentStep() === 'subtype') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-sub-title" (click)="closeIncidentDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-sub-title">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-sub-title" class="dialog-title">ช่องทางการแจ้งเหตุ</h2>
@@ -368,7 +368,7 @@
 
 <!-- ── Incident: เลือกระดับ ──────────────────────────────────────────── -->
 @if (incidentStep() === 'level') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-lvl-title" (click)="closeIncidentDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-lvl-title">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-lvl-title" class="dialog-title">ระดับความรุนแรง</h2>
@@ -404,7 +404,7 @@
 
 <!-- ── Incident: ยืนยัน ──────────────────────────────────────────────── -->
 @if (incidentStep() === 'confirm') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-inc-confirm-title" (click)="closeIncidentDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-inc-confirm-title">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-inc-confirm-title" class="dialog-titleX">ยืนยันการบันทึก</h2>
@@ -438,7 +438,7 @@
 
 <!-- ── Staff: เลือกเจ้าหน้าที่ ──────────────────────────────────────── -->
 @if (historyOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title" (click)="closeHistoryDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title">
     <div class="dialog history-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeHistoryDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-history-title" class="dialog-title">ประวัติบันทึกเหตุ</h2>
@@ -478,7 +478,7 @@
 }
 
 @if (infoOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title" (click)="closeInfoDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title">
     <div class="dialog info-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeInfoDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-info-title" class="dialog-title">ข้อมูลและวิธีใช้งาน</h2>
@@ -540,7 +540,7 @@
 }
 
 @if (staffDialogOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title" (click)="closeStaffDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title">
     <div class="dialog dialog-wide" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeStaffDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-title" class="dialog-title">กำหนดเจ้าหน้าที่ เวร{{ selectedShiftName() }}</h2>
@@ -628,7 +628,7 @@
 
 <!-- ── Staff: ยืนยัน ─────────────────────────────────────────────────── -->
 @if (staffConfirmOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title" (click)="closeStaffDialog()">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="cancelStaffConfirm()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-confirm-title" class="dialog-title">ยืนยันการกำหนดเจ้าหน้าที่</h2>
