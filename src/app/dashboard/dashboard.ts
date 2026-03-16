@@ -75,7 +75,7 @@ export class Dashboard implements OnDestroy {
   });
 
   // ── Date picker ──────────────────────────────────────────────────────────
-  readonly minDay = new TuiDay(2026, 2, 1);   // March 1, 2026  (month is 0-indexed)
+  readonly minDay = new TuiDay(2026, 2, 16);   // March 16, 2026  (month is 0-indexed)
   readonly maxDay = new TuiDay(2031, 11, 31);  // December 31, 2031
 
   readonly dateControl = new FormControl<TuiDay | null>(TuiDay.currentLocal());
