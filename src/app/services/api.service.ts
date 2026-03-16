@@ -12,7 +12,7 @@ import type {
   ShiftAssignmentResult,
 } from '../models/types';
 
-const API_URL = 'http://192.168.1.63:8000';
+const API_URL = 'http://192.168.1.41:8000';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
