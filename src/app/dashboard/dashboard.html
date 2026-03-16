@@ -121,7 +121,7 @@
       <!-- <div class="stat-sub-row">
         <span class="sub-tag tag-report">แจ้งเหตุ {{ summary()?.['แจ้งเหตุ']?.total ?? 0 }}</span>
         <span class="sub-tag tag-consult">ปรึกษา {{ summary()?.['ปรึกษา'] ?? 0 }}</span>
-        <span class="sub-tag tag-cut">สายขาด {{ summary()?.['สายขาด'] ?? 0 }}</span>
+        <span class="sub-tag tag-cut">สายหลุด {{ summary()?.['สายหลุด'] ?? 0 }}</span>
         <span class="sub-tag tag-prank">ก่อกวน {{ summary()?.['ก่อกวน'] ?? 0 }}</span>
       </div> -->
     </div>
@@ -187,7 +187,7 @@
       <div class="stat-value consult-value">{{ summary()?.['ปรึกษา'] ?? 0 }}</div>
     </div>
 
-    <!-- สายขาด -->
+    <!-- สายหลุด -->
     <div class="stat-card stat-cut">
       <div class="stat-header">
         <div class="stat-icon cut-icon" aria-hidden="true">
@@ -198,9 +198,9 @@
             <line x1="8.12" y1="8.12" x2="12" y2="12"/>
           </svg>
         </div>
-        <span class="stat-label">สายขาด</span>
+        <span class="stat-label">สายหลุด</span>
       </div>
-      <div class="stat-value cut-value">{{ summary()?.['สายขาด'] ?? 0 }}</div>
+      <div class="stat-value cut-value">{{ summary()?.['สายหลุด'] ?? 0 }}</div>
     </div>
 
     <!-- ก่อกวน -->
@@ -281,7 +281,7 @@
         </div>
           <span>ปรึกษา</span>
         </button>
-        <button class="option-btn opt-cut" (click)="selectIncidentType('สายขาด')">
+        <button class="option-btn opt-cut" (click)="selectIncidentType('สายหลุด')">
         <div class="stat-icon cut-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
@@ -290,7 +290,7 @@
             <line x1="8.12" y1="8.12" x2="12" y2="12"/>
           </svg>
         </div>
-          <span>สายขาด</span>
+          <span>สายหลุด</span>
         </button>
         <button class="option-btn opt-prank" (click)="selectIncidentType('ก่อกวน')">
         <div class="stat-icon prank-icon" aria-hidden="true">

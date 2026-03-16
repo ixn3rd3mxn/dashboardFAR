@@ -15,7 +15,7 @@ class ShiftWork(BaseModel):
 class Incident(BaseModel):
     date: str  # YYYY-MM-DD
     shift_id: int
-    type: str  # แจ้งเหตุ, ปรึกษา, สายขาด, ก่อกวน
+    type: str  # แจ้งเหตุ, ปรึกษา, สายหลุด, ก่อกวน
     subtype: Optional[str] = None  # 1669, 2nd, วิทยุ
     level: Optional[str] = None  # trauma, non-trauma
 

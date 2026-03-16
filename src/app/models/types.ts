@@ -29,7 +29,7 @@ export interface IncidentSummary {
   total: number;
   แจ้งเหตุ: IncidentSubSummary;
   ปรึกษา: number;
-  สายขาด: number;
+  สายหลุด: number;
   ก่อกวน: number;
 }
 

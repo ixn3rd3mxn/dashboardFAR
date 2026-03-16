@@ -84,7 +84,7 @@ def get_incident_summary(
             "non_trauma": 0,
         },
         "ปรึกษา": 0,
-        "สายขาด": 0,
+        "สายหลุด": 0,
         "ก่อกวน": 0,
     }
 
@@ -102,8 +102,8 @@ def get_incident_summary(
                 summary["แจ้งเหตุ"]["non_trauma"] += 1
         elif t == "ปรึกษา":
             summary["ปรึกษา"] += 1
-        elif t == "สายขาด":
-            summary["สายขาด"] += 1
+        elif t == "สายหลุด":
+            summary["สายหลุด"] += 1
         elif t == "ก่อกวน":
             summary["ก่อกวน"] += 1
 
