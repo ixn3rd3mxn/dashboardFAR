@@ -463,9 +463,9 @@
 }
 
 /* ── Total card ──────────────────────────────────────────────── */
-.stat-total::before { background: linear-gradient(90deg, var(--c-mid), var(--c-light)); }
+.stat-total::before { background: #000000; }
 
-.total-icon { background: rgba(67, 177, 199, 0.15); color: var(--c-base); }
+.total-icon { background: rgba(0, 0, 0, 0.15); color: #000000; }
 .total-value
 { flex: 1; display: flex; align-items: center; color: var(--c-lightest); justify-content: center; }
 

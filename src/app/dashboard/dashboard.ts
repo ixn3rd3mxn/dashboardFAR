@@ -47,6 +47,7 @@ export class Dashboard implements OnDestroy {
   private api = inject(ApiService);
   private clockInterval?: ReturnType<typeof setInterval>;
   private eventSource?: EventSource;
+  private shiftCheckTimer?: ReturnType<typeof setTimeout>;
   private mainReady = false;
   private prevIncidentTotal = -1;
   private beYearObserver?: MutationObserver;
@@ -209,6 +210,7 @@ export class Dashboard implements OnDestroy {
       this.beYearObserver = new MutationObserver(convertYears);
       this.beYearObserver.observe(document.body, { childList: true, subtree: true });
 
+      this.scheduleShiftCheck();
       this.loadShifts();
       this.loadRescuers();
       this.loadSummary();
@@ -217,11 +219,13 @@ export class Dashboard implements OnDestroy {
 
   ngOnDestroy(): void {
     clearInterval(this.clockInterval);
+    clearTimeout(this.shiftCheckTimer);
     this.eventSource?.close();
     this.beYearObserver?.disconnect();
   }
 
   setToday(): void {
+    this.selectedShiftId.set(this.getCurrentShiftId());
     this.inputDateDir()?.setDate(TuiDay.currentLocal());
   }
 
@@ -272,7 +276,7 @@ export class Dashboard implements OnDestroy {
 
   private pollDialogState(): void {
     this.api
-      .getShiftAssignment(this.selectedDate(), this.selectedShiftId())
+      .getShiftAssignment(this.assignmentDate(), this.selectedShiftId())
       .subscribe((result) => {
         const latestIds: number[] = result.rescue_ids;
         const base = this.dialogBaseIds();
@@ -308,6 +312,14 @@ export class Dashboard implements OnDestroy {
       });
   }
 
+  // ดึก (shift_id=3) เป็นเวรของคืนก่อนหน้า → ใช้ date ย้อนหลัง 1 วันสำหรับ shift-assignment
+  private assignmentDate(): string {
+    if (this.selectedShiftId() !== 3) return this.selectedDate();
+    const d = new Date(this.selectedDate() + 'T12:00:00');
+    d.setDate(d.getDate() - 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
   private todayISO(): string {
     const now = new Date();
     const y = now.getFullYear();
@@ -322,6 +334,32 @@ export class Dashboard implements OnDestroy {
     if (total >= 510 && total < 990) return 1; // 08:30–16:30 เช้า
     if (total >= 990) return 2;                 // 16:30–24:00 บ่าย
     return 3;                                   // 00:00–08:30 ดึก
+  }
+
+  private msUntilNextShiftBoundary(): number {
+    const now = new Date();
+    const nowMs = (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
+    const dayMs = 24 * 60 * 60 * 1000;
+    // boundaries: 00:00 (0), 08:30 (510min), 16:30 (990min)
+    for (const minBoundary of [510, 990]) {
+      const boundaryMs = minBoundary * 60 * 1000;
+      if (boundaryMs > nowMs) return boundaryMs - nowMs;
+    }
+    return dayMs - nowMs; // next 00:00
+  }
+
+  private scheduleShiftCheck(): void {
+    clearTimeout(this.shiftCheckTimer);
+    this.shiftCheckTimer = setTimeout(() => {
+      this.selectedShiftId.set(this.getCurrentShiftId());
+      this.selectedDate.set(this.todayISO());
+      this.dateControl.setValue(TuiDay.currentLocal(), { emitEvent: false });
+      this.mainReady = false;
+      this.prevIncidentTotal = -1;
+      this.loadSummary();
+      this.loadStaffAssignment();
+      this.scheduleShiftCheck();
+    }, this.msUntilNextShiftBoundary() + 100);
   }
 
   private loadShifts(): void {
@@ -356,7 +394,7 @@ export class Dashboard implements OnDestroy {
 
   loadStaffAssignment(): void {
     this.api
-      .getShiftAssignment(this.selectedDate(), this.selectedShiftId())
+      .getShiftAssignment(this.assignmentDate(), this.selectedShiftId())
       .subscribe((result) => {
         const ids: number[] = result.rescue_ids;
         if (this.mainReady && !this.staffDialogOpen() && !this.staffConfirmOpen()) {
@@ -539,7 +577,7 @@ onShiftChange(event: Event): void {
     const removeIds = new Set(this.staffToRemove().map((r) => r.rescue_id));
     const addIds = this.staffToAdd().map((r) => r.rescue_id);
     this.api
-      .getShiftAssignment(this.selectedDate(), this.selectedShiftId())
+      .getShiftAssignment(this.assignmentDate(), this.selectedShiftId())
       .subscribe((latest) => {
         const mergedIds = [
           ...latest.rescue_ids.filter((id: number) => !removeIds.has(id)),
@@ -547,7 +585,7 @@ onShiftChange(event: Event): void {
         ];
         this.api
           .saveShiftAssignment({
-            date: this.selectedDate(),
+            date: this.assignmentDate(),
             shift_id: this.selectedShiftId(),
             rescue_ids: mergedIds,
           })
