@@ -6,11 +6,7 @@
   <header class="header">
     <div class="header-brand">
       <div class="brand-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-        </svg>
+        <img ngSrc="https://www.niems.go.th/1/img/niemslogo.png" width="40" height="40" alt="" priority>
       </div>
       <div>
         <h1 class="brand-title">ศูนย์รับแจ้งเหตุฯ ปัตตานี</h1>
@@ -21,7 +17,7 @@
     <div class="header-clock" aria-live="polite" aria-atomic="true">
       <div class="clock-text">วันเวลาปัจจุบัน</div>
       <div class="clock-time">{{ formattedTime() }}</div>
-      <div class="clock-date">{{ formattedFullDate() }}</div>
+      <div class="clock-date">เวร{{ currentShiftName() }} • {{ formattedFullDate() }}</div>
     </div>
   </header>
 
@@ -30,22 +26,9 @@
   ════════════════════════════════════════════════════════════════ -->
   <div class="controls-bar">
     <div class="controls-left">
-      <div class="control-group date-picker">
-                <label class="control-label" for="date-input">วันที่</label>
-        <tui-textfield [tuiTextfieldCleaner]="false" tuiTextfieldSize="s">
-          <!-- <label tuiLabel>วันที่</label> -->
-          <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" readonly />
-          <ng-template tuiTextfieldDropdown>
-            <tui-calendar [min]="minDay" [max]="maxDay" >
-            <!-- <tui-calendar> -->
-            <button type="button" class="cal-today-btn" (click)="setToday()">วันนี้</button>
-            </tui-calendar>
-          </ng-template>
-        </tui-textfield>
-      </div>
 
       <div class="control-group">
-        <label class="control-label" for="shift-btn">เวร</label>
+        <!-- <label class="control-label" for="shift-btn">เวร</label> -->
         @if (shiftDropdownOpen()) {
           <div class="dropdown-backdrop" (click)="shiftDropdownOpen.set(false)"></div>
         }
@@ -79,6 +62,31 @@
           }
         </div>
       </div>
+      <div class="control-group date-picker">
+                <!-- <label class="control-label" for="date-input">วันที่</label> -->
+        <tui-textfield [tuiTextfieldCleaner]="false" tuiTextfieldSize="s">
+          <!-- <label tuiLabel>วันที่</label> -->
+          <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" readonly />
+          <ng-template tuiTextfieldDropdown>
+            <tui-calendar [min]="minDay" [max]="maxDay" >
+            <!-- <tui-calendar> -->
+            </tui-calendar>
+          </ng-template>
+        </tui-textfield>
+      </div>
+      <button class="btnX btn-settoday" (click)="setToday()" type="button">วันนี้</button>
+      <div class="ctrl-info-wrap">
+        <button class="ctrl-info-btn" type="button" aria-label="ข้อมูลการเลือกวันและเวร">?</button>
+        <div class="ctrl-info-tooltip" role="tooltip">
+          <strong>การเลือกวันและเวร</strong>
+          <ul>
+            <li>เลือก <b>เวร</b> เพื่อดูข้อมูลเฉพาะกะนั้น</li>
+            <li>เลือก <b>วันที่</b> เพื่อดูข้อมูลย้อนหลัง</li>
+            <li>กด <b>วันนี้</b> เพื่อกลับมาวันปัจจุบัน</li>
+            <li>เมื่อเวลาเข้าสู่ <b>กะใหม่</b> ระบบจะรีเซ็ตอัตโนมัติ โดยเลือกเวรและวันที่อัตโนมัติตามกะปัจจุบัน</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="controls-right">
@@ -103,9 +111,9 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       STATS GRID
+       STATS — แถวบน (4 การ์ด)
   ════════════════════════════════════════════════════════════════ -->
-  <div class="stats-grid">
+  <div class="stats-top">
 
     <!-- Total -->
     <div class="stat-card stat-total">
@@ -118,60 +126,6 @@
         <span class="stat-label">รวมทั้งหมด</span>
       </div>
       <div class="stat-value total-value">{{ summary()?.total ?? 0 }}</div>
-      <!-- <div class="stat-sub-row">
-        <span class="sub-tag tag-report">แจ้งเหตุ {{ summary()?.['แจ้งเหตุ']?.total ?? 0 }}</span>
-        <span class="sub-tag tag-consult">ปรึกษา {{ summary()?.['ปรึกษา'] ?? 0 }}</span>
-        <span class="sub-tag tag-cut">สายหลุด {{ summary()?.['สายหลุด'] ?? 0 }}</span>
-        <span class="sub-tag tag-prank">ก่อกวน {{ summary()?.['ก่อกวน'] ?? 0 }}</span>
-      </div> -->
-    </div>
-
-    <!-- แจ้งเหตุ -->
-    <div class="stat-card stat-report">
-      <div class="stat-header">
-        <div class="stat-icon report-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
-            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-        </div>
-        <span class="stat-label">แจ้งเหตุ</span>
-      </div>
-      <div class="stat-body">
-        <div class="stat-valueX report-value">{{ summary()?.['แจ้งเหตุ']?.total ?? 0 }}</div>
-        <div class="stat-breakdown">
-          <div class="breakdown-section">
-            <div class="breakdown-title">ช่องทาง</div>
-            <div class="breakdown-items">
-              <div class="breakdown-item">
-                <span class="breakdown-label">1669</span>
-                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['1669'] ?? 0 }}</span>
-              </div>
-              <div class="breakdown-item">
-                <span class="breakdown-label">2nd</span>
-                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['2nd'] ?? 0 }}</span>
-              </div>
-              <div class="breakdown-item">
-                <span class="breakdown-label">วิทยุ</span>
-                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['วิทยุ'] ?? 0 }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="breakdown-section">
-            <div class="breakdown-title">ระดับ</div>
-            <div class="breakdown-items">
-              <div class="breakdown-item">
-                <span class="breakdown-label trauma-label">Trauma</span>
-                <span class="breakdown-count trauma-count">{{ summary()?.['แจ้งเหตุ']?.trauma ?? 0 }}</span>
-              </div>
-              <div class="breakdown-item">
-                <span class="breakdown-label non-trauma-label">Non-trauma</span>
-                <span class="breakdown-count non-trauma-count">{{ summary()?.['แจ้งเหตุ']?.non_trauma ?? 0 }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ปรึกษา -->
@@ -221,34 +175,83 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
-       STAFF SECTION
+       STATS — แถวล่าง (แจ้งเหตุ + เจ้าหน้าที่)
   ════════════════════════════════════════════════════════════════ -->
-  <section class="staff-section" aria-label="เจ้าหน้าที่ประจำเวร">
-    <div class="staff-section-header">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      <span>เจ้าหน้าที่เวร<strong>{{ selectedShiftName() }}</strong></span>
-      @if (selectedShiftId() === 2 || selectedShiftId() === 3) {
-        <!-- <span class="staff-note">(บ่าย–ดึก ใช้เจ้าหน้าที่เดียวกัน)</span> -->
-      }
-    </div>
-    <div class="staff-chips" role="list">
-      @if (assignedRescuers().length === 0) {
-        <span class="staff-empty">ยังไม่ได้กำหนดเจ้าหน้าที่</span>
-      } @else {
-        @for (r of assignedRescuers(); track r.rescue_id) {
-          <div class="staff-chip" role="listitem">
-            <!-- <span class="chip-dot" aria-hidden="true"></span> -->
-            {{ r.rescue_name }}
+  <div class="stats-bottom">
+
+    <!-- แจ้งเหตุ -->
+    <div class="stat-card stat-report">
+      <div class="stat-header">
+        <div class="stat-icon report-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
+            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <span class="stat-label">แจ้งเหตุ</span>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value report-value">{{ summary()?.['แจ้งเหตุ']?.total ?? 0 }}</div>
+        <div class="report-divider" aria-hidden="true"></div>
+        <div class="stat-breakdown">
+          <div class="breakdown-section">
+            <div class="breakdown-title">ช่องทาง</div>
+            <div class="breakdown-items">
+              <div class="breakdown-item">
+                <span class="breakdown-label">1669</span>
+                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['1669'] ?? 0 }}</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">2nd</span>
+                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['2nd'] ?? 0 }}</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">วิทยุ</span>
+                <span class="breakdown-count">{{ summary()?.['แจ้งเหตุ']?.['วิทยุ'] ?? 0 }}</span>
+              </div>
+            </div>
           </div>
-        }
-      }
+          <div class="breakdown-section">
+            <div class="breakdown-title">ระดับ</div>
+            <div class="breakdown-items">
+              <div class="breakdown-item">
+                <span class="breakdown-label trauma-label">Trauma</span>
+                <span class="breakdown-count trauma-count">{{ summary()?.['แจ้งเหตุ']?.trauma ?? 0 }}</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label non-trauma-label">NonTrauma</span>
+                <span class="breakdown-count non-trauma-count">{{ summary()?.['แจ้งเหตุ']?.non_trauma ?? 0 }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+
+    <!-- เจ้าหน้าที่ประจำเวร -->
+    <section class="staff-section" aria-label="เจ้าหน้าที่ประจำเวร">
+      <div class="staff-section-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <!-- <span>เจ้าหน้าที่ทำการ<strong>{{ selectedShiftName() }}</strong></span> -->
+        <span>เจ้าหน้าที่ทำการ</span>
+      </div>
+      <div class="staff-chips" role="list">
+        @if (assignedRescuers().length === 0) {
+          <span class="staff-empty">ยังไม่ได้กำหนดเจ้าหน้าที่</span>
+        } @else {
+          @for (r of assignedRescuers(); track r.rescue_id) {
+            <div class="staff-chip" role="listitem">{{ r.rescue_name }}</div>
+          }
+        }
+      </div>
+    </section>
+
+  </div>
 
 </div>
 
@@ -258,7 +261,7 @@
 
 <!-- ── Incident: เลือกประเภท ─────────────────────────────────────────── -->
 @if (incidentStep() === 'type') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-type-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-type-title"(click)="closeIncidentDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-type-title" class="dialog-title">บันทึกเหตุ</h2>
@@ -309,7 +312,7 @@
 
 <!-- ── Incident: เลือกช่องทาง ────────────────────────────────────────── -->
 @if (incidentStep() === 'subtype') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-sub-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-sub-title" (click)="closeIncidentDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-sub-title" class="dialog-title">ช่องทางการแจ้งเหตุ</h2>
@@ -368,7 +371,7 @@
 
 <!-- ── Incident: เลือกระดับ ──────────────────────────────────────────── -->
 @if (incidentStep() === 'level') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-lvl-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-lvl-title" (click)="closeIncidentDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-lvl-title" class="dialog-title">ระดับความรุนแรง</h2>
@@ -404,7 +407,7 @@
 
 <!-- ── Incident: ยืนยัน ──────────────────────────────────────────────── -->
 @if (incidentStep() === 'confirm') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-inc-confirm-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-inc-confirm-title" (click)="closeIncidentDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-inc-confirm-title" class="dialog-titleX">ยืนยันการบันทึก</h2>
@@ -438,7 +441,7 @@
 
 <!-- ── Staff: เลือกเจ้าหน้าที่ ──────────────────────────────────────── -->
 @if (historyOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title" (click)="closeHistoryDialog()">
     <div class="dialog history-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeHistoryDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-history-title" class="dialog-title">ประวัติบันทึกเหตุ</h2>
@@ -478,24 +481,14 @@
 }
 
 @if (infoOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title" (click)="closeInfoDialog()">
     <div class="dialog info-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeInfoDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-info-title" class="dialog-title">ข้อมูลและวิธีใช้งาน</h2>
-
+      <div class="info-listX">
+        <li>เวลาเวร: เช้า 08:30–16:30 · บ่าย 16:30–00.00 · ดึก 00:30–08:30</li>
+      </div>
       <div class="info-sections">
-        <section class="info-section">
-          <h3 class="info-section-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            การเลือกวันและเวร
-          </h3>
-          <ul class="info-list">
-            <li>กดที่ <strong>วันที่</strong> เพื่อเปลี่ยนวันที่ต้องการดูข้อมูล</li>
-            <li>กดที่ <strong>ชื่อเวร</strong> (เช้า / บ่าย / ดึก) เพื่อสลับเวร</li>
-            <li>เวร <strong>บ่าย</strong> และ <strong>ดึก</strong> ใช้รายชื่อเจ้าหน้าที่ชุดเดียวกัน</li>
-            <li>เวลาเวร: เช้า 08:30–16:30 · บ่าย 16:30–00.00 · ดึก 00:00–08:30</li>
-          </ul>
-        </section>
 
         <section class="info-section">
           <h3 class="info-section-title">
@@ -507,6 +500,7 @@
             <li>สามารถค้นหาชื่อได้ในช่องค้นหา และเลือกได้หลายคน</li>
             <li>กดปุ่ม <strong>บันทึก</strong> เพื่อยืนยัน หรือ <strong>ยกเลิก</strong> เพื่อออกโดยไม่บันทึก</li>
             <li>รายชื่อที่เลือกจะแสดงในตาราง <strong>เจ้าหน้าที่ปฏิบัติงาน</strong></li>
+            <li>เวร <strong>ดึก</strong> จะดึงรายชื่อจากเวร <strong>บ่าย</strong> โดยอัตโนมัติ</li>
           </ul>
         </section>
 
@@ -540,7 +534,7 @@
 }
 
 @if (staffDialogOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title" (click)="closeStaffDialog()">
     <div class="dialog dialog-wide" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeStaffDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-title" class="dialog-title">กำหนดเจ้าหน้าที่ เวร{{ selectedShiftName() }}</h2>
@@ -628,9 +622,9 @@
 
 <!-- ── Staff: ยืนยัน ─────────────────────────────────────────────────── -->
 @if (staffConfirmOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title">
+  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title" (click)="closeStaffConfirm()">
     <div class="dialog" (click)="$event.stopPropagation()">
-      <button class="dialog-close-btn" (click)="cancelStaffConfirm()" aria-label="ปิด">✕</button>
+      <button class="dialog-close-btn" (click)="closeStaffConfirm()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-confirm-title" class="dialog-title">ยืนยันการกำหนดเจ้าหน้าที่</h2>
       <p class="dialog-desc">เวร <strong>{{ selectedShiftName() }}</strong></p>
 

@@ -122,13 +122,11 @@ def get_incident_list(
 
 @app.post("/shift-assignment")
 async def set_shift_assignment(assignment: ShiftAssignment):
-    # บ่าย (2) and ดึก (3) share the same staff, stored under shift_id=2
-    store_shift_id = 2 if assignment.shift_id in (2, 3) else assignment.shift_id
     now = datetime.now()
     saved_at = f"{now.hour:02d}:{now.minute:02d}:{now.second:02d}"
 
     current = shift_assignment_collection.find_one(
-        {"date": assignment.date, "shift_id": store_shift_id}
+        {"date": assignment.date, "shift_id": assignment.shift_id}
     )
     current_ids = set(current.get("rescue_ids", []) if current else [])
     new_ids = set(assignment.rescue_ids)
@@ -139,7 +137,7 @@ async def set_shift_assignment(assignment: ShiftAssignment):
     }
 
     shift_assignment_collection.update_one(
-        {"date": assignment.date, "shift_id": store_shift_id},
+        {"date": assignment.date, "shift_id": assignment.shift_id},
         {
             "$set": {"rescue_ids": assignment.rescue_ids, "saved_at": saved_at},
             "$push": {"changes": change_entry},
@@ -155,10 +153,14 @@ def get_shift_assignment(
     date: str = Query(...),
     shift_id: int = Query(...),
 ):
-    store_shift_id = 2 if shift_id in (2, 3) else shift_id
     result = shift_assignment_collection.find_one(
-        {"date": date, "shift_id": store_shift_id}, {"_id": 0}
+        {"date": date, "shift_id": shift_id}, {"_id": 0}
     )
+    # ดึก (3): ถ้ายังไม่มีการบันทึกแยก → ใช้รายชื่อจากบ่าย (2) เป็นค่าเริ่มต้น
+    if not result and shift_id == 3:
+        result = shift_assignment_collection.find_one(
+            {"date": date, "shift_id": 2}, {"_id": 0}
+        )
     if not result:
         return {"date": date, "shift_id": shift_id, "rescue_ids": []}
     return result

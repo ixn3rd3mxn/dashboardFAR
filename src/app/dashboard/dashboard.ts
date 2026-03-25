@@ -8,6 +8,7 @@ import {
   OnDestroy,
   viewChild,
 } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TuiDay, TuiYear } from '@taiga-ui/cdk';
 import { TUI_MONTHS, TUI_SHORT_WEEK_DAYS, TuiScrollbar, TuiTextfield, TuiTextfieldOptionsDirective } from '@taiga-ui/core';
@@ -25,12 +26,19 @@ import type {
   IncidentStep,
 } from '../models/types';
 
+// เวลา HH:MM:SS → นาทีที่ปรับสำหรับกะบ่าย (00:00–00:29 ถือว่าเป็น 24:00–24:29)
+function toShiftMinutes(time: string): number {
+  const [h, m] = time.split(':').map(Number);
+  const total = h * 60 + m;
+  return total < 30 ? total + 24 * 60 : total;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TuiTextfield, TuiTextfieldOptionsDirective, TuiInputDate],
+  imports: [ReactiveFormsModule, TuiTextfield, TuiTextfieldOptionsDirective, TuiInputDate, NgOptimizedImage],
   providers: [
     tuiDateFormatProvider({ mode: 'DMY', separator: '/' }),
     {
@@ -79,11 +87,11 @@ export class Dashboard implements OnDestroy {
   readonly minDay = new TuiDay(2026, 2, 16);   // March 16, 2026  (month is 0-indexed)
   readonly maxDay = new TuiDay(2031, 11, 31);  // December 31, 2031
 
-  readonly dateControl = new FormControl<TuiDay | null>(TuiDay.currentLocal());
+  readonly dateControl = new FormControl<TuiDay | null>(this.initialShiftTuiDay());
 
   private readonly inputDateDir = viewChild(TuiInputDateDirective);
 
-  selectedDate = signal<string>(this.todayISO());
+  selectedDate = signal<string>(this.initialShiftDateISO());
 
   // ── Shifts ────────────────────────────────────────────────────────────────
   shifts = signal<ShiftWork[]>([]);
@@ -93,6 +101,13 @@ export class Dashboard implements OnDestroy {
   selectedShiftName = computed(() => {
     const shift = this.shifts().find((s) => s.shiftwork_id === this.selectedShiftId());
     return shift?.shiftwork_name ?? '';
+  });
+
+  currentShiftName = computed(() => {
+    const total = this.currentTime().getHours() * 60 + this.currentTime().getMinutes();
+    if (total >= 510 && total < 990) return 'เช้า';
+    if (total >= 30 && total < 510) return 'ดึก';
+    return 'บ่าย';
   });
 
   // ── Summary ───────────────────────────────────────────────────────────────
@@ -123,7 +138,7 @@ export class Dashboard implements OnDestroy {
   incidentToasts = signal<{ id: number; incType: string; subtype: string | null; level: string | null; time: string; own: boolean }[]>([]);
   allToasts = computed(() =>
     [...this.dialogToasts().map((t) => ({ ...t, kind: 'dialog' as const })), ...this.incidentToasts().map((t) => ({ ...t, kind: 'incident' as const }))]
-      .sort((a, b) => a.time.localeCompare(b.time)),
+      .sort((a, b) => toShiftMinutes(a.time) - toShiftMinutes(b.time)),
   );
   private toastIdSeq = 0;
 
@@ -225,8 +240,9 @@ export class Dashboard implements OnDestroy {
   }
 
   setToday(): void {
-    this.selectedShiftId.set(this.getCurrentShiftId());
-    this.inputDateDir()?.setDate(TuiDay.currentLocal());
+    const shiftId = this.getCurrentShiftId();
+    this.selectedShiftId.set(shiftId);
+    this.inputDateDir()?.setDate(this.initialShiftTuiDay());
   }
 
   private groupByChangelog(
@@ -332,20 +348,49 @@ export class Dashboard implements OnDestroy {
     const now = new Date();
     const total = now.getHours() * 60 + now.getMinutes();
     if (total >= 510 && total < 990) return 1; // 08:30–16:30 เช้า
-    if (total >= 990) return 2;                 // 16:30–24:00 บ่าย
-    return 3;                                   // 00:00–08:30 ดึก
+    if (total >= 30 && total < 510) return 3;  // 00:30–08:30 ดึก
+    return 2;                                   // 16:30–00:30 บ่าย
   }
 
   private msUntilNextShiftBoundary(): number {
     const now = new Date();
     const nowMs = (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
     const dayMs = 24 * 60 * 60 * 1000;
-    // boundaries: 00:00 (0), 08:30 (510min), 16:30 (990min)
-    for (const minBoundary of [510, 990]) {
+    // boundaries: 00:30 (30min), 08:30 (510min), 16:30 (990min)
+    for (const minBoundary of [30, 510, 990]) {
       const boundaryMs = minBoundary * 60 * 1000;
       if (boundaryMs > nowMs) return boundaryMs - nowMs;
     }
-    return dayMs - nowMs; // next 00:00
+    return dayMs - nowMs + 30 * 60 * 1000; // next 00:30
+  }
+
+  // ── Shift date helpers ────────────────────────────────────────────────────
+
+  // บ่าย ช่วง 00:00–00:30 ข้ามเที่ยงคืน → ใช้วันก่อนหน้าเป็น selectedDate
+  private initialShiftDateISO(): string {
+    const shiftId = this.getCurrentShiftId();
+    if (shiftId === 2) {
+      const now = new Date();
+      if (now.getHours() * 60 + now.getMinutes() < 30) {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+    }
+    return this.todayISO();
+  }
+
+  private initialShiftTuiDay(): TuiDay {
+    const shiftId = this.getCurrentShiftId();
+    if (shiftId === 2) {
+      const now = new Date();
+      if (now.getHours() * 60 + now.getMinutes() < 30) {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        return new TuiDay(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+    }
+    return TuiDay.currentLocal();
   }
 
   private scheduleShiftCheck(): void {
@@ -569,6 +614,10 @@ onShiftChange(event: Event): void {
   cancelStaffConfirm(): void {
     this.staffConfirmOpen.set(false);
     this.staffDialogOpen.set(true);
+  }
+
+  closeStaffConfirm(): void {
+    this.staffConfirmOpen.set(false);
   }
 
   saveStaffAssignment(): void {
