@@ -13,3 +13,5 @@ ng update @taiga-ui/cdk
 
 npm outdated
 npm update XXX
+
+conda activate myenv && conda update --all --dry-run && pip list --outdated && ng update && npm outdated
