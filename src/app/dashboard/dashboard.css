@@ -563,6 +563,27 @@
   box-shadow: 0 8px 24px rgba(0, 80, 140, 0.14);
 }
 
+/* ── Shift comparison badge ──────────────────────────────────── */
+.stat-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+.stat-badge.badge-up      { background: rgba(6, 214, 160, 0.15); color: #06D6A0; }
+.stat-badge.badge-down    { background: rgba(230, 57, 70, 0.15);  color: #E63946; }
+.stat-badge.badge-neutral { background: rgba(150, 150, 150, 0.12); color: var(--tx-3); }
+
+/* badge บนพื้นหลังเข้ม (total card) */
+.stat-total .stat-badge.badge-up      { background: rgba(6, 214, 160, 0.25); }
+.stat-total .stat-badge.badge-down    { background: rgba(230, 57, 70, 0.25); }
+.stat-total .stat-badge.badge-neutral { background: rgba(255, 255, 255, 0.12); color: rgba(255,255,255,0.5); }
+
 .stat-header {
   display: flex;
   align-items: center;

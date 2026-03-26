@@ -117,6 +117,9 @@
 
     <!-- Total -->
     <div class="stat-card stat-total">
+      @if (summaryDiff(); as diff) {
+        <span class="stat-badge" [class.badge-up]="diff.total > 0" [class.badge-down]="diff.total < 0" [class.badge-neutral]="diff.total === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff.total > 0 ? '+' : '') + diff.total + ' จากเวรก่อนหน้า'">{{ diff.total > 0 ? '+' + diff.total : diff.total }}</span>
+      }
       <div class="stat-header">
         <div class="stat-icon total-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -130,6 +133,9 @@
 
     <!-- ปรึกษา -->
     <div class="stat-card stat-consult">
+      @if (summaryDiff(); as diff) {
+        <span class="stat-badge" [class.badge-up]="diff['ปรึกษา'] > 0" [class.badge-down]="diff['ปรึกษา'] < 0" [class.badge-neutral]="diff['ปรึกษา'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['ปรึกษา'] > 0 ? '+' : '') + diff['ปรึกษา'] + ' จากเวรก่อนหน้า'">{{ diff['ปรึกษา'] > 0 ? '+' + diff['ปรึกษา'] : diff['ปรึกษา'] }}</span>
+      }
       <div class="stat-header">
         <div class="stat-icon consult-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -143,6 +149,9 @@
 
     <!-- สายหลุด -->
     <div class="stat-card stat-cut">
+      @if (summaryDiff(); as diff) {
+        <span class="stat-badge" [class.badge-up]="diff['สายหลุด'] > 0" [class.badge-down]="diff['สายหลุด'] < 0" [class.badge-neutral]="diff['สายหลุด'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['สายหลุด'] > 0 ? '+' : '') + diff['สายหลุด'] + ' จากเวรก่อนหน้า'">{{ diff['สายหลุด'] > 0 ? '+' + diff['สายหลุด'] : diff['สายหลุด'] }}</span>
+      }
       <div class="stat-header">
         <div class="stat-icon cut-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -159,6 +168,9 @@
 
     <!-- ก่อกวน -->
     <div class="stat-card stat-prank">
+      @if (summaryDiff(); as diff) {
+        <span class="stat-badge" [class.badge-up]="diff['ก่อกวน'] > 0" [class.badge-down]="diff['ก่อกวน'] < 0" [class.badge-neutral]="diff['ก่อกวน'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['ก่อกวน'] > 0 ? '+' : '') + diff['ก่อกวน'] + ' จากเวรก่อนหน้า'">{{ diff['ก่อกวน'] > 0 ? '+' + diff['ก่อกวน'] : diff['ก่อกวน'] }}</span>
+      }
       <div class="stat-header">
         <div class="stat-icon prank-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -181,6 +193,9 @@
 
     <!-- แจ้งเหตุ -->
     <div class="stat-card stat-report">
+      @if (summaryDiff(); as diff) {
+        <span class="stat-badge" [class.badge-up]="diff['แจ้งเหตุ'] > 0" [class.badge-down]="diff['แจ้งเหตุ'] < 0" [class.badge-neutral]="diff['แจ้งเหตุ'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['แจ้งเหตุ'] > 0 ? '+' : '') + diff['แจ้งเหตุ'] + ' จากเวรก่อนหน้า'">{{ diff['แจ้งเหตุ'] > 0 ? '+' + diff['แจ้งเหตุ'] : diff['แจ้งเหตุ'] }}</span>
+      }
       <div class="stat-header">
         <div class="stat-icon report-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

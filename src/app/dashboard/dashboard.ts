@@ -112,6 +112,20 @@ export class Dashboard implements OnDestroy {
 
   // ── Summary ───────────────────────────────────────────────────────────────
   summary = signal<IncidentSummary | null>(null);
+  previousSummary = signal<IncidentSummary | null>(null);
+
+  summaryDiff = computed(() => {
+    const cur = this.summary();
+    const prev = this.previousSummary();
+    if (!cur || !prev) return null;
+    return {
+      total:    cur.total - prev.total,
+      แจ้งเหตุ:  cur['แจ้งเหตุ'].total - prev['แจ้งเหตุ'].total,
+      ปรึกษา:   cur['ปรึกษา']  - prev['ปรึกษา'],
+      สายหลุด:  cur['สายหลุด'] - prev['สายหลุด'],
+      ก่อกวน:   cur['ก่อกวน']  - prev['ก่อกวน'],
+    };
+  });
 
   // ── Incident dialog ───────────────────────────────────────────────────────
   incidentStep = signal<IncidentStep>('');
@@ -418,7 +432,17 @@ export class Dashboard implements OnDestroy {
     });
   }
 
+  private loadPreviousSummary(): void {
+    const d = new Date(this.selectedDate() + 'T12:00:00');
+    d.setDate(d.getDate() - 1);
+    const prevDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    this.api.getIncidentSummary(prevDate, this.selectedShiftId()).subscribe((data) => {
+      this.previousSummary.set(data);
+    });
+  }
+
   loadSummary(): void {
+    this.loadPreviousSummary();
     this.api
       .getIncidentSummary(this.selectedDate(), this.selectedShiftId())
       .subscribe((data) => {

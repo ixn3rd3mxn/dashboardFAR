@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap');
+/* Sarabun loaded via <link> in index.html */
+
+*, *::before, *::after {
+  font-family: 'Sarabun', sans-serif;
+}
 
 /* ── Taiga UI InputDate calendar overrides ──────────────────── */
 tui-calendar {
