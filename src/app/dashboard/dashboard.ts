@@ -11,7 +11,13 @@ import {
 import { NgOptimizedImage } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TuiDay, TuiYear } from '@taiga-ui/cdk';
-import { TUI_MONTHS, TUI_SHORT_WEEK_DAYS, TuiScrollbar, TuiTextfield, TuiTextfieldOptionsDirective } from '@taiga-ui/core';
+import {
+  TUI_MONTHS,
+  TUI_SHORT_WEEK_DAYS,
+  TuiScrollbar,
+  TuiTextfieldOptionsDirective,
+  TuiInput,
+} from '@taiga-ui/core';
 import { TuiInputDate } from '@taiga-ui/kit';
 import { TuiInputDateDirective } from '@taiga-ui/kit/components/input-date';
 import { tuiDateFormatProvider } from '@taiga-ui/core/tokens';
@@ -38,16 +44,35 @@ function toShiftMinutes(time: string): number {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TuiTextfield, TuiTextfieldOptionsDirective, TuiInputDate, NgOptimizedImage],
+  imports: [
+    ReactiveFormsModule,
+    TuiInput,
+    TuiTextfieldOptionsDirective,
+    TuiInputDate,
+    NgOptimizedImage,
+  ],
   providers: [
     tuiDateFormatProvider({ mode: 'DMY', separator: '/' }),
     {
       provide: TUI_MONTHS,
-      useValue: of(['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'] as const),
+      useValue: of([
+        'มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม',
+      ] as const),
     },
     {
       provide: TUI_SHORT_WEEK_DAYS,
-      useValue: of(['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'] as const),
+      useValue: of(['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'] as const),
     },
   ],
 })
@@ -84,8 +109,8 @@ export class Dashboard implements OnDestroy {
   });
 
   // ── Date picker ──────────────────────────────────────────────────────────
-  readonly minDay = new TuiDay(2026, 2, 16);   // March 16, 2026  (month is 0-indexed)
-  readonly maxDay = new TuiDay(2031, 11, 31);  // December 31, 2031
+  readonly minDay = new TuiDay(2026, 2, 16); // March 16, 2026  (month is 0-indexed)
+  readonly maxDay = new TuiDay(2031, 11, 31); // December 31, 2031
 
   readonly dateControl = new FormControl<TuiDay | null>(this.initialShiftTuiDay());
 
@@ -119,11 +144,11 @@ export class Dashboard implements OnDestroy {
     const prev = this.previousSummary();
     if (!cur || !prev) return null;
     return {
-      total:    cur.total - prev.total,
-      แจ้งเหตุ:  cur['แจ้งเหตุ'].total - prev['แจ้งเหตุ'].total,
-      ปรึกษา:   cur['ปรึกษา']  - prev['ปรึกษา'],
-      สายหลุด:  cur['สายหลุด'] - prev['สายหลุด'],
-      ก่อกวน:   cur['ก่อกวน']  - prev['ก่อกวน'],
+      total: cur.total - prev.total,
+      แจ้งเหตุ: cur['แจ้งเหตุ'].total - prev['แจ้งเหตุ'].total,
+      ปรึกษา: cur['ปรึกษา'] - prev['ปรึกษา'],
+      สายหลุด: cur['สายหลุด'] - prev['สายหลุด'],
+      ก่อกวน: cur['ก่อกวน'] - prev['ก่อกวน'],
     };
   });
 
@@ -148,11 +173,24 @@ export class Dashboard implements OnDestroy {
   selectedRescueIds = signal<number[]>([]);
   assignedRescuers = signal<Rescue[]>([]);
   dialogBaseIds = signal<number[]>([]);
-  dialogToasts = signal<{ id: number; names: string[]; type: 'add' | 'remove'; time: string; own: boolean }[]>([]);
-  incidentToasts = signal<{ id: number; incType: string; subtype: string | null; level: string | null; time: string; own: boolean }[]>([]);
+  dialogToasts = signal<
+    { id: number; names: string[]; type: 'add' | 'remove'; time: string; own: boolean }[]
+  >([]);
+  incidentToasts = signal<
+    {
+      id: number;
+      incType: string;
+      subtype: string | null;
+      level: string | null;
+      time: string;
+      own: boolean;
+    }[]
+  >([]);
   allToasts = computed(() =>
-    [...this.dialogToasts().map((t) => ({ ...t, kind: 'dialog' as const })), ...this.incidentToasts().map((t) => ({ ...t, kind: 'incident' as const }))]
-      .sort((a, b) => toShiftMinutes(a.time) - toShiftMinutes(b.time)),
+    [
+      ...this.dialogToasts().map((t) => ({ ...t, kind: 'dialog' as const })),
+      ...this.incidentToasts().map((t) => ({ ...t, kind: 'incident' as const })),
+    ].sort((a, b) => toShiftMinutes(a.time) - toShiftMinutes(b.time)),
   );
   private toastIdSeq = 0;
 
@@ -163,7 +201,7 @@ export class Dashboard implements OnDestroy {
   });
 
   selectedRescuersForConfirm = computed(() =>
-    this.rescuers().filter((r) => this.selectedRescueIds().includes(r.rescue_id))
+    this.rescuers().filter((r) => this.selectedRescueIds().includes(r.rescue_id)),
   );
 
   staffToAdd = computed(() => {
@@ -174,7 +212,7 @@ export class Dashboard implements OnDestroy {
   staffToRemove = computed(() => {
     const selected = this.selectedRescueIds();
     return this.rescuers().filter(
-      (r) => this.dialogBaseIds().includes(r.rescue_id) && !selected.includes(r.rescue_id)
+      (r) => this.dialogBaseIds().includes(r.rescue_id) && !selected.includes(r.rescue_id),
     );
   });
 
@@ -188,7 +226,9 @@ export class Dashboard implements OnDestroy {
   constructor() {
     // แสดงปีเป็น พ.ศ. ใน calendar header (CE + 543)
     Object.defineProperty(TuiYear.prototype, 'formattedYear', {
-      get(this: TuiYear) { return String(this.year + 543).padStart(4, '0'); },
+      get(this: TuiYear) {
+        return String(this.year + 543).padStart(4, '0');
+      },
       configurable: true,
     });
 
@@ -211,9 +251,11 @@ export class Dashboard implements OnDestroy {
         this.loadSummary();
         this.loadStaffAssignment();
         if (this.historyOpen()) {
-          this.api.getIncidentList(this.selectedDate(), this.selectedShiftId()).subscribe((list) => {
-            this.incidentHistory.set(list);
-          });
+          this.api
+            .getIncidentList(this.selectedDate(), this.selectedShiftId())
+            .subscribe((list) => {
+              this.incidentHistory.set(list);
+            });
         }
       });
       this.eventSource.addEventListener('staff_updated', () => {
@@ -270,7 +312,10 @@ export class Dashboard implements OnDestroy {
       let time = fallback ?? this.nowHHMMSS();
       if (changes) {
         for (let i = changes.length - 1; i >= 0; i--) {
-          if (changes[i][field].includes(id)) { time = changes[i].saved_at; break; }
+          if (changes[i][field].includes(id)) {
+            time = changes[i].saved_at;
+            break;
+          }
         }
       }
       grouped.set(time, [...(grouped.get(time) ?? []), id]);
@@ -283,9 +328,19 @@ export class Dashboard implements OnDestroy {
     return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
   }
 
-  private addIncidentToast(incType: string, subtype: string | null, level: string | null, own: boolean, time?: string): void {
+  private addIncidentToast(
+    incType: string,
+    subtype: string | null,
+    level: string | null,
+    own: boolean,
+    time?: string,
+  ): void {
     const id = ++this.toastIdSeq;
-    this.incidentToasts.update((list) => [...list, { id, incType, subtype, level, time: time ?? this.nowHHMMSS(), own }].sort((a, b) => a.time.localeCompare(b.time)));
+    this.incidentToasts.update((list) =>
+      [...list, { id, incType, subtype, level, time: time ?? this.nowHHMMSS(), own }].sort((a, b) =>
+        a.time.localeCompare(b.time),
+      ),
+    );
     setTimeout(() => {
       this.incidentToasts.update((list) => list.filter((t) => t.id !== id));
     }, 6000);
@@ -293,7 +348,11 @@ export class Dashboard implements OnDestroy {
 
   private addToast(names: string[], type: 'add' | 'remove', own = false, time?: string): void {
     const id = ++this.toastIdSeq;
-    this.dialogToasts.update((list) => [...list, { id, names, type, time: time ?? this.nowHHMMSS(), own }].sort((a, b) => a.time.localeCompare(b.time)));
+    this.dialogToasts.update((list) =>
+      [...list, { id, names, type, time: time ?? this.nowHHMMSS(), own }].sort((a, b) =>
+        a.time.localeCompare(b.time),
+      ),
+    );
     setTimeout(() => {
       this.dialogToasts.update((list) => list.filter((t) => t.id !== id));
     }, 6000);
@@ -315,14 +374,28 @@ export class Dashboard implements OnDestroy {
         const externalRemoved = base.filter((id) => !latestIds.includes(id));
 
         if (externalAdded.length > 0) {
-          for (const [time, ids] of this.groupByChangelog(externalAdded, 'added', result.changes, result.saved_at)) {
-            const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+          for (const [time, ids] of this.groupByChangelog(
+            externalAdded,
+            'added',
+            result.changes,
+            result.saved_at,
+          )) {
+            const names = this.rescuers()
+              .filter((r) => ids.includes(r.rescue_id))
+              .map((r) => r.rescue_name);
             this.addToast(names, 'add', false, time);
           }
         }
         if (externalRemoved.length > 0) {
-          for (const [time, ids] of this.groupByChangelog(externalRemoved, 'removed', result.changes, result.saved_at)) {
-            const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+          for (const [time, ids] of this.groupByChangelog(
+            externalRemoved,
+            'removed',
+            result.changes,
+            result.saved_at,
+          )) {
+            const names = this.rescuers()
+              .filter((r) => ids.includes(r.rescue_id))
+              .map((r) => r.rescue_name);
             this.addToast(names, 'remove', false, time);
           }
         }
@@ -336,9 +409,7 @@ export class Dashboard implements OnDestroy {
         ];
         this.dialogBaseIds.set(latestIds);
         this.selectedRescueIds.set(newSelected);
-        this.assignedRescuers.set(
-          this.rescuers().filter((r) => latestIds.includes(r.rescue_id))
-        );
+        this.assignedRescuers.set(this.rescuers().filter((r) => latestIds.includes(r.rescue_id)));
       });
   }
 
@@ -362,13 +433,15 @@ export class Dashboard implements OnDestroy {
     const now = new Date();
     const total = now.getHours() * 60 + now.getMinutes();
     if (total >= 510 && total < 990) return 1; // 08:30–16:30 เช้า
-    if (total >= 30 && total < 510) return 3;  // 00:30–08:30 ดึก
-    return 2;                                   // 16:30–00:30 บ่าย
+    if (total >= 30 && total < 510) return 3; // 00:30–08:30 ดึก
+    return 2; // 16:30–00:30 บ่าย
   }
 
   private msUntilNextShiftBoundary(): number {
     const now = new Date();
-    const nowMs = (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000 + now.getMilliseconds();
+    const nowMs =
+      (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000 +
+      now.getMilliseconds();
     const dayMs = 24 * 60 * 60 * 1000;
     // boundaries: 00:30 (30min), 08:30 (510min), 16:30 (990min)
     for (const minBoundary of [30, 510, 990]) {
@@ -443,22 +516,21 @@ export class Dashboard implements OnDestroy {
 
   loadSummary(): void {
     this.loadPreviousSummary();
-    this.api
-      .getIncidentSummary(this.selectedDate(), this.selectedShiftId())
-      .subscribe((data) => {
-        const prevTotal = this.prevIncidentTotal;
-        const newTotal = data.total;
-        this.summary.set(data);
-        if (prevTotal !== -1 && newTotal > prevTotal) {
-          this.api.getIncidentList(this.selectedDate(), this.selectedShiftId())
-            .subscribe((incidents: IncidentRecord[]) => {
-              for (const inc of incidents.slice(prevTotal)) {
-                this.addIncidentToast(inc.type, inc.subtype, inc.level, false, inc.saved_at);
-              }
-            });
-        }
-        this.prevIncidentTotal = newTotal;
-      });
+    this.api.getIncidentSummary(this.selectedDate(), this.selectedShiftId()).subscribe((data) => {
+      const prevTotal = this.prevIncidentTotal;
+      const newTotal = data.total;
+      this.summary.set(data);
+      if (prevTotal !== -1 && newTotal > prevTotal) {
+        this.api
+          .getIncidentList(this.selectedDate(), this.selectedShiftId())
+          .subscribe((incidents: IncidentRecord[]) => {
+            for (const inc of incidents.slice(prevTotal)) {
+              this.addIncidentToast(inc.type, inc.subtype, inc.level, false, inc.saved_at);
+            }
+          });
+      }
+      this.prevIncidentTotal = newTotal;
+    });
   }
 
   loadStaffAssignment(): void {
@@ -471,14 +543,28 @@ export class Dashboard implements OnDestroy {
           const added = ids.filter((id) => !prev.includes(id));
           const removed = prev.filter((id) => !ids.includes(id));
           if (added.length > 0) {
-            for (const [time, ids] of this.groupByChangelog(added, 'added', result.changes, result.saved_at)) {
-              const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+            for (const [time, ids] of this.groupByChangelog(
+              added,
+              'added',
+              result.changes,
+              result.saved_at,
+            )) {
+              const names = this.rescuers()
+                .filter((r) => ids.includes(r.rescue_id))
+                .map((r) => r.rescue_name);
               this.addToast(names, 'add', false, time);
             }
           }
           if (removed.length > 0) {
-            for (const [time, ids] of this.groupByChangelog(removed, 'removed', result.changes, result.saved_at)) {
-              const names = this.rescuers().filter((r) => ids.includes(r.rescue_id)).map((r) => r.rescue_name);
+            for (const [time, ids] of this.groupByChangelog(
+              removed,
+              'removed',
+              result.changes,
+              result.saved_at,
+            )) {
+              const names = this.rescuers()
+                .filter((r) => ids.includes(r.rescue_id))
+                .map((r) => r.rescue_name);
               this.addToast(names, 'remove', false, time);
             }
           }
@@ -490,7 +576,7 @@ export class Dashboard implements OnDestroy {
 
   // ── Controls ──────────────────────────────────────────────────────────────
 
-onShiftChange(event: Event): void {
+  onShiftChange(event: Event): void {
     this.selectedShiftId.set(Number((event.target as HTMLSelectElement).value));
     this.mainReady = false;
     this.prevIncidentTotal = -1;
@@ -525,8 +611,12 @@ onShiftChange(event: Event): void {
 
   // ── Info dialog ───────────────────────────────────────────────────────────
 
-  openInfoDialog(): void { this.infoOpen.set(true); }
-  closeInfoDialog(): void { this.infoOpen.set(false); }
+  openInfoDialog(): void {
+    this.infoOpen.set(true);
+  }
+  closeInfoDialog(): void {
+    this.infoOpen.set(false);
+  }
 
   // ── History dialog ────────────────────────────────────────────────────────
 
@@ -536,7 +626,9 @@ onShiftChange(event: Event): void {
       this.historyOpen.set(true);
     });
   }
-  closeHistoryDialog(): void { this.historyOpen.set(false); }
+  closeHistoryDialog(): void {
+    this.historyOpen.set(false);
+  }
 
   selectIncidentType(type: string): void {
     this.selectedIncidentType.set(type);
@@ -613,9 +705,7 @@ onShiftChange(event: Event): void {
 
   toggleRescuer(id: number): void {
     const cur = this.selectedRescueIds();
-    this.selectedRescueIds.set(
-      cur.includes(id) ? cur.filter((i) => i !== id) : [...cur, id]
-    );
+    this.selectedRescueIds.set(cur.includes(id) ? cur.filter((i) => i !== id) : [...cur, id]);
   }
 
   clearSearch(searchEl: HTMLElement): void {
@@ -666,7 +756,8 @@ onShiftChange(event: Event): void {
             this.staffConfirmOpen.set(false);
             this.mainReady = false;
             if (toAddNames.length > 0) this.addToast(toAddNames, 'add', true, res.saved_at);
-            if (toRemoveNames.length > 0) this.addToast(toRemoveNames, 'remove', true, res.saved_at);
+            if (toRemoveNames.length > 0)
+              this.addToast(toRemoveNames, 'remove', true, res.saved_at);
             this.loadStaffAssignment();
           });
       });

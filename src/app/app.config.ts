@@ -1,4 +1,4 @@
-import { provideEventPlugins } from '@taiga-ui/event-plugins';
+import { provideTaiga } from '@taiga-ui/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -12,6 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
-    provideEventPlugins(),
+    provideTaiga(),
   ],
 };

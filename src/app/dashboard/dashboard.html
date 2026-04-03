@@ -1,12 +1,17 @@
 <div class="page">
-
   <!-- ═══════════════════════════════════════════════════════════
        HEADER
   ════════════════════════════════════════════════════════════════ -->
   <header class="header">
     <div class="header-brand">
       <div class="brand-icon" aria-hidden="true">
-        <img ngSrc="https://www.niems.go.th/1/img/niemslogo.png" width="40" height="40" alt="" priority>
+        <img
+          ngSrc="https://www.niems.go.th/1/img/niemslogo.png"
+          width="40"
+          height="40"
+          alt=""
+          priority
+        />
       </div>
       <div>
         <h1 class="brand-title">ศูนย์รับแจ้งเหตุฯ ปัตตานี</h1>
@@ -26,7 +31,6 @@
   ════════════════════════════════════════════════════════════════ -->
   <div class="controls-bar">
     <div class="controls-left">
-
       <div class="control-group">
         <!-- <label class="control-label" for="shift-btn">เวร</label> -->
         @if (shiftDropdownOpen()) {
@@ -43,8 +47,17 @@
             type="button"
           >
             <span>{{ selectedShiftName() }}</span>
-            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"/>
+            <svg
+              class="chevron"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
           @if (shiftDropdownOpen()) {
@@ -56,20 +69,22 @@
                   (click)="selectShift(shift.shiftwork_id)"
                   role="option"
                   [attr.aria-selected]="shift.shiftwork_id === selectedShiftId()"
-                >{{ shift.shiftwork_name }}</li>
+                >
+                  {{ shift.shiftwork_name }}
+                </li>
               }
             </ul>
           }
         </div>
       </div>
       <div class="control-group date-picker">
-                <!-- <label class="control-label" for="date-input">วันที่</label> -->
+        <!-- <label class="control-label" for="date-input">วันที่</label> -->
         <tui-textfield [tuiTextfieldCleaner]="false" tuiTextfieldSize="s">
           <!-- <label tuiLabel>วันที่</label> -->
           <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" readonly />
           <ng-template tuiTextfieldDropdown>
-            <tui-calendar [min]="minDay" [max]="maxDay" >
-            <!-- <tui-calendar> -->
+            <tui-calendar [min]="minDay" [max]="maxDay">
+              <!-- <tui-calendar> -->
             </tui-calendar>
           </ng-template>
         </tui-textfield>
@@ -83,7 +98,10 @@
             <li>เลือก <b>เวร</b> เพื่อดูข้อมูลเฉพาะกะนั้น</li>
             <li>เลือก <b>วันที่</b> เพื่อดูข้อมูลย้อนหลัง</li>
             <li>กด <b>วันนี้</b> เพื่อกลับมาวันปัจจุบัน</li>
-            <li>เมื่อเวลาเข้าสู่ <b>กะใหม่</b> ระบบจะรีเซ็ตอัตโนมัติ โดยเลือกเวรและวันที่อัตโนมัติตามกะปัจจุบัน</li>
+            <li>
+              เมื่อเวลาเข้าสู่ <b>กะใหม่</b> ระบบจะรีเซ็ตอัตโนมัติ
+              โดยเลือกเวรและวันที่อัตโนมัติตามกะปัจจุบัน
+            </li>
           </ul>
         </div>
       </div>
@@ -91,19 +109,35 @@
 
     <div class="controls-right">
       <button class="btn btn-record" (click)="openIncidentDialog()" aria-label="บันทึกเหตุ">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="16" />
+          <line x1="8" y1="12" x2="16" y2="12" />
         </svg>
         บันทึกเหตุ
       </button>
       <button class="btn btn-staff" (click)="openStaffDialog()" aria-label="กำหนดเจ้าหน้าที่">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
         กำหนดเจ้าหน้าที่
       </button>
@@ -114,16 +148,25 @@
        STATS — แถวบน (4 การ์ด)
   ════════════════════════════════════════════════════════════════ -->
   <div class="stats-top">
-
     <!-- Total -->
     <div class="stat-card stat-total">
       @if (summaryDiff(); as diff) {
-        <span class="stat-badge" [class.badge-up]="diff.total > 0" [class.badge-down]="diff.total < 0" [class.badge-neutral]="diff.total === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff.total > 0 ? '+' : '') + diff.total + ' จากเวรก่อนหน้า'">{{ diff.total > 0 ? '+' + diff.total : diff.total }}</span>
+        <span
+          class="stat-badge"
+          [class.badge-up]="diff.total > 0"
+          [class.badge-down]="diff.total < 0"
+          [class.badge-neutral]="diff.total === 0"
+          [attr.aria-label]="
+            'เปลี่ยนแปลง ' + (diff.total > 0 ? '+' : '') + diff.total + ' จากเวรก่อนหน้า'
+          "
+          >{{ diff.total > 0 ? '+' + diff.total : diff.total }}</span
+        >
       }
       <div class="stat-header">
         <div class="stat-icon total-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
           </svg>
         </div>
         <span class="stat-label">รวมทั้งหมด</span>
@@ -134,12 +177,21 @@
     <!-- ปรึกษา -->
     <div class="stat-card stat-consult">
       @if (summaryDiff(); as diff) {
-        <span class="stat-badge" [class.badge-up]="diff['ปรึกษา'] > 0" [class.badge-down]="diff['ปรึกษา'] < 0" [class.badge-neutral]="diff['ปรึกษา'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['ปรึกษา'] > 0 ? '+' : '') + diff['ปรึกษา'] + ' จากเวรก่อนหน้า'">{{ diff['ปรึกษา'] > 0 ? '+' + diff['ปรึกษา'] : diff['ปรึกษา'] }}</span>
+        <span
+          class="stat-badge"
+          [class.badge-up]="diff['ปรึกษา'] > 0"
+          [class.badge-down]="diff['ปรึกษา'] < 0"
+          [class.badge-neutral]="diff['ปรึกษา'] === 0"
+          [attr.aria-label]="
+            'เปลี่ยนแปลง ' + (diff['ปรึกษา'] > 0 ? '+' : '') + diff['ปรึกษา'] + ' จากเวรก่อนหน้า'
+          "
+          >{{ diff['ปรึกษา'] > 0 ? '+' + diff['ปรึกษา'] : diff['ปรึกษา'] }}</span
+        >
       }
       <div class="stat-header">
         <div class="stat-icon consult-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </div>
         <span class="stat-label">ปรึกษา</span>
@@ -150,15 +202,25 @@
     <!-- สายหลุด -->
     <div class="stat-card stat-cut">
       @if (summaryDiff(); as diff) {
-        <span class="stat-badge" [class.badge-up]="diff['สายหลุด'] > 0" [class.badge-down]="diff['สายหลุด'] < 0" [class.badge-neutral]="diff['สายหลุด'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['สายหลุด'] > 0 ? '+' : '') + diff['สายหลุด'] + ' จากเวรก่อนหน้า'">{{ diff['สายหลุด'] > 0 ? '+' + diff['สายหลุด'] : diff['สายหลุด'] }}</span>
+        <span
+          class="stat-badge"
+          [class.badge-up]="diff['สายหลุด'] > 0"
+          [class.badge-down]="diff['สายหลุด'] < 0"
+          [class.badge-neutral]="diff['สายหลุด'] === 0"
+          [attr.aria-label]="
+            'เปลี่ยนแปลง ' + (diff['สายหลุด'] > 0 ? '+' : '') + diff['สายหลุด'] + ' จากเวรก่อนหน้า'
+          "
+          >{{ diff['สายหลุด'] > 0 ? '+' + diff['สายหลุด'] : diff['สายหลุด'] }}</span
+        >
       }
       <div class="stat-header">
         <div class="stat-icon cut-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
-            <line x1="20" y1="4" x2="8.12" y2="15.88"/>
-            <line x1="14.47" y1="14.48" x2="20" y2="20"/>
-            <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            <circle cx="6" cy="6" r="3" />
+            <circle cx="6" cy="18" r="3" />
+            <line x1="20" y1="4" x2="8.12" y2="15.88" />
+            <line x1="14.47" y1="14.48" x2="20" y2="20" />
+            <line x1="8.12" y1="8.12" x2="12" y2="12" />
           </svg>
         </div>
         <span class="stat-label">สายหลุด</span>
@@ -169,38 +231,62 @@
     <!-- ก่อกวน -->
     <div class="stat-card stat-prank">
       @if (summaryDiff(); as diff) {
-        <span class="stat-badge" [class.badge-up]="diff['ก่อกวน'] > 0" [class.badge-down]="diff['ก่อกวน'] < 0" [class.badge-neutral]="diff['ก่อกวน'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['ก่อกวน'] > 0 ? '+' : '') + diff['ก่อกวน'] + ' จากเวรก่อนหน้า'">{{ diff['ก่อกวน'] > 0 ? '+' + diff['ก่อกวน'] : diff['ก่อกวน'] }}</span>
+        <span
+          class="stat-badge"
+          [class.badge-up]="diff['ก่อกวน'] > 0"
+          [class.badge-down]="diff['ก่อกวน'] < 0"
+          [class.badge-neutral]="diff['ก่อกวน'] === 0"
+          [attr.aria-label]="
+            'เปลี่ยนแปลง ' + (diff['ก่อกวน'] > 0 ? '+' : '') + diff['ก่อกวน'] + ' จากเวรก่อนหน้า'
+          "
+          >{{ diff['ก่อกวน'] > 0 ? '+' + diff['ก่อกวน'] : diff['ก่อกวน'] }}</span
+        >
       }
       <div class="stat-header">
         <div class="stat-icon prank-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
         </div>
         <span class="stat-label">ก่อกวน</span>
       </div>
       <div class="stat-value prank-value">{{ summary()?.['ก่อกวน'] ?? 0 }}</div>
     </div>
-
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
        STATS — แถวล่าง (แจ้งเหตุ + เจ้าหน้าที่)
   ════════════════════════════════════════════════════════════════ -->
   <div class="stats-bottom">
-
     <!-- แจ้งเหตุ -->
     <div class="stat-card stat-report">
       @if (summaryDiff(); as diff) {
-        <span class="stat-badge" [class.badge-up]="diff['แจ้งเหตุ'] > 0" [class.badge-down]="diff['แจ้งเหตุ'] < 0" [class.badge-neutral]="diff['แจ้งเหตุ'] === 0" [attr.aria-label]="'เปลี่ยนแปลง ' + (diff['แจ้งเหตุ'] > 0 ? '+' : '') + diff['แจ้งเหตุ'] + ' จากเวรก่อนหน้า'">{{ diff['แจ้งเหตุ'] > 0 ? '+' + diff['แจ้งเหตุ'] : diff['แจ้งเหตุ'] }}</span>
+        <span
+          class="stat-badge"
+          [class.badge-up]="diff['แจ้งเหตุ'] > 0"
+          [class.badge-down]="diff['แจ้งเหตุ'] < 0"
+          [class.badge-neutral]="diff['แจ้งเหตุ'] === 0"
+          [attr.aria-label]="
+            'เปลี่ยนแปลง ' +
+            (diff['แจ้งเหตุ'] > 0 ? '+' : '') +
+            diff['แจ้งเหตุ'] +
+            ' จากเวรก่อนหน้า'
+          "
+          >{{ diff['แจ้งเหตุ'] > 0 ? '+' + diff['แจ้งเหตุ'] : diff['แจ้งเหตุ'] }}</span
+        >
       }
       <div class="stat-header">
         <div class="stat-icon report-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
-            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            <polygon
+              points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
+            />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
         </div>
         <span class="stat-label">แจ้งเหตุ</span>
@@ -231,11 +317,15 @@
             <div class="breakdown-items">
               <div class="breakdown-item">
                 <span class="breakdown-label trauma-label">Trauma</span>
-                <span class="breakdown-count trauma-count">{{ summary()?.['แจ้งเหตุ']?.trauma ?? 0 }}</span>
+                <span class="breakdown-count trauma-count">{{
+                  summary()?.['แจ้งเหตุ']?.trauma ?? 0
+                }}</span>
               </div>
               <div class="breakdown-item">
                 <span class="breakdown-label non-trauma-label">NonTrauma</span>
-                <span class="breakdown-count non-trauma-count">{{ summary()?.['แจ้งเหตุ']?.non_trauma ?? 0 }}</span>
+                <span class="breakdown-count non-trauma-count">{{
+                  summary()?.['แจ้งเหตุ']?.non_trauma ?? 0
+                }}</span>
               </div>
             </div>
           </div>
@@ -246,11 +336,19 @@
     <!-- เจ้าหน้าที่ประจำเวร -->
     <section class="staff-section" aria-label="เจ้าหน้าที่ประจำเวร">
       <div class="staff-section-header">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
         <!-- <span>เจ้าหน้าที่ทำการ<strong>{{ selectedShiftName() }}</strong></span> -->
         <span>เจ้าหน้าที่ทำการ</span>
@@ -265,9 +363,7 @@
         }
       </div>
     </section>
-
   </div>
-
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -276,48 +372,60 @@
 
 <!-- ── Incident: เลือกประเภท ─────────────────────────────────────────── -->
 @if (incidentStep() === 'type') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-type-title"(click)="closeIncidentDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-type-title"
+    (click)="closeIncidentDialog()"
+  >
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-type-title" class="dialog-title">บันทึกเหตุ</h2>
       <p class="dialog-desc">เลือกประเภทการบันทึก</p>
       <div class="option-grid">
         <button class="option-btn opt-report" (click)="selectIncidentType('แจ้งเหตุ')">
-        <div class="stat-icon report-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/>
-            <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-        </div>
+          <div class="stat-icon report-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon
+                points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
+              />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
           <span>แจ้งเหตุ</span>
         </button>
         <button class="option-btn opt-consult" (click)="selectIncidentType('ปรึกษา')">
-        <div class="stat-icon consult-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        </div>
+          <div class="stat-icon consult-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
           <span>ปรึกษา</span>
         </button>
         <button class="option-btn opt-cut" (click)="selectIncidentType('สายหลุด')">
-        <div class="stat-icon cut-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
-            <line x1="20" y1="4" x2="8.12" y2="15.88"/>
-            <line x1="14.47" y1="14.48" x2="20" y2="20"/>
-            <line x1="8.12" y1="8.12" x2="12" y2="12"/>
-          </svg>
-        </div>
+          <div class="stat-icon cut-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="6" cy="6" r="3" />
+              <circle cx="6" cy="18" r="3" />
+              <line x1="20" y1="4" x2="8.12" y2="15.88" />
+              <line x1="14.47" y1="14.48" x2="20" y2="20" />
+              <line x1="8.12" y1="8.12" x2="12" y2="12" />
+            </svg>
+          </div>
           <span>สายหลุด</span>
         </button>
         <button class="option-btn opt-prank" (click)="selectIncidentType('ก่อกวน')">
-        <div class="stat-icon prank-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-        </div>
+          <div class="stat-icon prank-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
           <span>ก่อกวน</span>
         </button>
       </div>
@@ -327,102 +435,118 @@
 
 <!-- ── Incident: เลือกช่องทาง ────────────────────────────────────────── -->
 @if (incidentStep() === 'subtype') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-sub-title" (click)="closeIncidentDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-sub-title"
+    (click)="closeIncidentDialog()"
+  >
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-sub-title" class="dialog-title">ช่องทางการแจ้งเหตุ</h2>
       <p class="dialog-desc">เลือกช่องทางที่รับแจ้ง</p>
       <div class="option-grid option-grid-3">
         <button class="option-btn opt-channel" (click)="selectSubtype('1669')">
-        <div class="stat-icon report-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-</svg>
-        </div>          
+          <div class="stat-icon report-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"
+              />
+            </svg>
+          </div>
           <span>1669</span>
         </button>
         <button class="option-btn opt-channel" (click)="selectSubtype('2nd')">
-        <div class="stat-icon report-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <!-- Phone body -->
-  <rect x="5" y="2" width="14" height="20" rx="2"/>
-  <!-- Speaker -->
-  <line x1="9" y1="6" x2="15" y2="6"/>
-  <!-- Home button -->
-  <circle cx="12" cy="18" r="1"/>
-</svg>
-        </div>
+          <div class="stat-icon report-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <!-- Phone body -->
+              <rect x="5" y="2" width="14" height="20" rx="2" />
+              <!-- Speaker -->
+              <line x1="9" y1="6" x2="15" y2="6" />
+              <!-- Home button -->
+              <circle cx="12" cy="18" r="1" />
+            </svg>
+          </div>
           <span>2nd</span>
         </button>
         <button class="option-btn opt-channel" (click)="selectSubtype('วิทยุ')">
           <span class="opt-icon" aria-hidden="true"></span>
-        <div class="stat-icon report-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <!-- Antenna -->
-  <line x1="8" y1="2" x2="16" y2="5"/>
-  <!-- Radio body -->
-  <rect x="2" y="5" width="20" height="14" rx="2"/>
-  <!-- Speaker grille lines -->
-  <line x1="6" y1="9" x2="6" y2="15"/>
-  <line x1="8" y1="9" x2="8" y2="15"/>
-  <line x1="10" y1="9" x2="10" y2="15"/>
-  <!-- Tuning dial (circle) -->
-  <circle cx="16" cy="12" r="3"/>
-  <!-- Power/volume knob -->
-  <circle cx="16" cy="12" r="1" fill="currentColor"/>
-</svg>
-        </div>
+          <div class="stat-icon report-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <!-- Antenna -->
+              <line x1="8" y1="2" x2="16" y2="5" />
+              <!-- Radio body -->
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <!-- Speaker grille lines -->
+              <line x1="6" y1="9" x2="6" y2="15" />
+              <line x1="8" y1="9" x2="8" y2="15" />
+              <line x1="10" y1="9" x2="10" y2="15" />
+              <!-- Tuning dial (circle) -->
+              <circle cx="16" cy="12" r="3" />
+              <!-- Power/volume knob -->
+              <circle cx="16" cy="12" r="1" fill="currentColor" />
+            </svg>
+          </div>
           <span>วิทยุ</span>
         </button>
       </div>
-            <div class="dialog-actions">
-      <button class="btn-cancel-actionX" (click)="incidentStep.set('type')">
-        ย้อนกลับ
-      </button>
-            </div>
+      <div class="dialog-actions">
+        <button class="btn-cancel-actionX" (click)="incidentStep.set('type')">ย้อนกลับ</button>
+      </div>
     </div>
   </div>
 }
 
 <!-- ── Incident: เลือกระดับ ──────────────────────────────────────────── -->
 @if (incidentStep() === 'level') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-lvl-title" (click)="closeIncidentDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-lvl-title"
+    (click)="closeIncidentDialog()"
+  >
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-lvl-title" class="dialog-title">ระดับความรุนแรง</h2>
       <p class="dialog-desc">{{ selectedSubtype() }} — เลือกระดับผู้ป่วย</p>
       <div class="option-grid option-grid-2">
         <button class="option-btn opt-trauma" (click)="selectLevel('trauma')">
-        <div class="stat-icon report-iconcustom" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <circle cx="12" cy="12" r="9"/>
-  <circle cx="12" cy="12" r="1" fill="currentColor" stroke-width="6"/>
-</svg>
-        </div>
+          <div class="stat-icon report-iconcustom" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="1" fill="currentColor" stroke-width="6" />
+            </svg>
+          </div>
           <span>Trauma</span>
         </button>
         <button class="option-btn opt-nontrauma" (click)="selectLevel('non-trauma')">
-        <div class="stat-icon report-iconcustomX" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <circle cx="12" cy="12" r="9"/>
-  <circle cx="12" cy="12" r="1" fill="currentColor" stroke-width="6"/>
-</svg>
-        </div>
+          <div class="stat-icon report-iconcustomX" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="1" fill="currentColor" stroke-width="6" />
+            </svg>
+          </div>
           <span>Non-trauma</span>
         </button>
       </div>
-            <div class="dialog-actions">
-      <button class="btn-cancel-actionX" (click)="incidentStep.set('subtype')">
-        ย้อนกลับ
-      </button>
-            </div>
+      <div class="dialog-actions">
+        <button class="btn-cancel-actionX" (click)="incidentStep.set('subtype')">ย้อนกลับ</button>
+      </div>
     </div>
   </div>
 }
 
 <!-- ── Incident: ยืนยัน ──────────────────────────────────────────────── -->
 @if (incidentStep() === 'confirm') {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-inc-confirm-title" (click)="closeIncidentDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-inc-confirm-title"
+    (click)="closeIncidentDialog()"
+  >
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeIncidentDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-inc-confirm-title" class="dialog-titleX">ยืนยันการบันทึก</h2>
@@ -446,9 +570,12 @@
       </div>
       <div class="dialog-actions">
         <button class="btn-confirm-action" (click)="confirmIncident()">ยืนยัน</button>
-      <button class="btn-cancel-actionX" (click)="incidentStep.set(selectedSubtype() ? 'level' : 'type')">
-        ย้อนกลับ
-      </button>
+        <button
+          class="btn-cancel-actionX"
+          (click)="incidentStep.set(selectedSubtype() ? 'level' : 'type')"
+        >
+          ย้อนกลับ
+        </button>
       </div>
     </div>
   </div>
@@ -456,7 +583,13 @@
 
 <!-- ── Staff: เลือกเจ้าหน้าที่ ──────────────────────────────────────── -->
 @if (historyOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-history-title" (click)="closeHistoryDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-history-title"
+    (click)="closeHistoryDialog()"
+  >
     <div class="dialog history-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeHistoryDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-history-title" class="dialog-title">ประวัติบันทึกเหตุ</h2>
@@ -496,7 +629,13 @@
 }
 
 @if (infoOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-info-title" (click)="closeInfoDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-info-title"
+    (click)="closeInfoDialog()"
+  >
     <div class="dialog info-dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeInfoDialog()" aria-label="ปิด">✕</button>
       <h2 id="dlg-info-title" class="dialog-title">ข้อมูลและวิธีใช้งาน</h2>
@@ -504,16 +643,31 @@
         <li>เวลาเวร: เช้า 08:30–16:30 · บ่าย 16:30–00.00 · ดึก 00:30–08:30</li>
       </div>
       <div class="info-sections">
-
         <section class="info-section">
           <h3 class="info-section-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
             กำหนดเจ้าหน้าที่
           </h3>
           <ul class="info-list">
             <li>กดปุ่ม <strong>กำหนดเจ้าหน้าที่</strong> เพื่อเลือกผู้ปฏิบัติงานในเวรนั้น</li>
             <li>สามารถค้นหาชื่อได้ในช่องค้นหา และเลือกได้หลายคน</li>
-            <li>กดปุ่ม <strong>บันทึก</strong> เพื่อยืนยัน หรือ <strong>ยกเลิก</strong> เพื่อออกโดยไม่บันทึก</li>
+            <li>
+              กดปุ่ม <strong>บันทึก</strong> เพื่อยืนยัน หรือ
+              <strong>ยกเลิก</strong> เพื่อออกโดยไม่บันทึก
+            </li>
             <li>รายชื่อที่เลือกจะแสดงในตาราง <strong>เจ้าหน้าที่ปฏิบัติงาน</strong></li>
             <li>เวร <strong>ดึก</strong> จะดึงรายชื่อจากเวร <strong>บ่าย</strong> โดยอัตโนมัติ</li>
           </ul>
@@ -521,12 +675,27 @@
 
         <section class="info-section">
           <h3 class="info-section-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
             บันทึกเหตุ
           </h3>
           <ul class="info-list">
             <li>กดปุ่ม <strong>บันทึกเหตุ</strong> เพื่อเปิดฟอร์มบันทึกเหตุการณ์</li>
-            <li>เลือก <strong>ประเภทเหตุ</strong> จากนั้นเลือก <strong>ช่องทาง</strong> และ <strong>ระดับความรุนแรง</strong></li>
+            <li>
+              เลือก <strong>ประเภทเหตุ</strong> จากนั้นเลือก <strong>ช่องทาง</strong> และ
+              <strong>ระดับความรุนแรง</strong>
+            </li>
             <li>กดยืนยันเพื่อบันทึก ระบบจะแสดงการแจ้งเตือนทางมุมขวาล่าง</li>
             <li>หากมีผู้ใช้งานอื่นบันทึกพร้อมกัน จะมีการแจ้งเตือนปรากฏขึ้นเช่นกัน</li>
           </ul>
@@ -534,7 +703,19 @@
 
         <section class="info-section">
           <h3 class="info-section-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              aria-hidden="true"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
             แดชบอร์ดสรุปเหตุ
           </h3>
           <ul class="info-list">
@@ -549,17 +730,34 @@
 }
 
 @if (staffDialogOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-title" (click)="closeStaffDialog()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-staff-title"
+    (click)="closeStaffDialog()"
+  >
     <div class="dialog dialog-wide" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeStaffDialog()" aria-label="ปิด">✕</button>
-      <h2 id="dlg-staff-title" class="dialog-title">กำหนดเจ้าหน้าที่ เวร{{ selectedShiftName() }}</h2>
+      <h2 id="dlg-staff-title" class="dialog-title">
+        กำหนดเจ้าหน้าที่ เวร{{ selectedShiftName() }}
+      </h2>
       <p class="dialog-desc">สามารถเลือกได้หลายคน และสามารถกดกาออกได้ หากกาผิดคน</p>
-     
 
       <div class="staff-search-row">
         <div class="search-input-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="search-icon">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+            class="search-icon"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <div
             #searchDiv
@@ -577,7 +775,9 @@
               (click)="clearSearch(searchDiv)"
               aria-label="ลบคำค้นหา"
               type="button"
-            >✕</button>
+            >
+              ✕
+            </button>
           }
         </div>
         <!-- <button class="btn-clear-all" (click)="clearSelected(searchDiv)" aria-label="ล้างรายชื่อทั้งหมด" title="ล้างการเลือกทั้งหมด">
@@ -585,7 +785,12 @@
         </button> -->
       </div>
 
-      <div class="staff-list" role="listbox" aria-multiselectable="true" aria-label="รายชื่อเจ้าหน้าที่">
+      <div
+        class="staff-list"
+        role="listbox"
+        aria-multiselectable="true"
+        aria-label="รายชื่อเจ้าหน้าที่"
+      >
         @for (r of filteredRescuers(); track r.rescue_id) {
           <div
             class="staff-item"
@@ -594,8 +799,14 @@
             role="option"
             [attr.aria-selected]="isSelected(r.rescue_id)"
           >
-            <div class="staff-checkbox" [class.checked]="isSelected(r.rescue_id)" aria-hidden="true">
-              @if (isSelected(r.rescue_id)) { ✓ }
+            <div
+              class="staff-checkbox"
+              [class.checked]="isSelected(r.rescue_id)"
+              aria-hidden="true"
+            >
+              @if (isSelected(r.rescue_id)) {
+                ✓
+              }
             </div>
             <span class="staff-name">{{ r.rescue_name }}</span>
             @if (getItemStatus(r.rescue_id); as status) {
@@ -605,9 +816,15 @@
                 [class.badge-remove]="status === 'remove'"
                 [class.badge-keep]="status === 'keep'"
               >
-                @if (status === 'add') { เพิ่ม }
-                @if (status === 'remove') { ลบ }
-                @if (status === 'keep') { คงเดิม }
+                @if (status === 'add') {
+                  เพิ่ม
+                }
+                @if (status === 'remove') {
+                  ลบ
+                }
+                @if (status === 'keep') {
+                  คงเดิม
+                }
               </span>
             }
           </div>
@@ -626,8 +843,15 @@
           class="btn-confirm-action"
           (click)="confirmStaffSelection()"
           [disabled]="staffToAdd().length === 0 && staffToRemove().length === 0"
-        >ตกลง</button>
-        <button class="btn-clear-all" (click)="clearSelected(searchDiv)" aria-label="ล้างรายชื่อทั้งหมด" title="ล้างการเลือกทั้งหมด">
+        >
+          ตกลง
+        </button>
+        <button
+          class="btn-clear-all"
+          (click)="clearSelected(searchDiv)"
+          aria-label="ล้างรายชื่อทั้งหมด"
+          title="ล้างการเลือกทั้งหมด"
+        >
           ล้างการเลือกทั้งหมด
         </button>
       </div>
@@ -637,11 +861,19 @@
 
 <!-- ── Staff: ยืนยัน ─────────────────────────────────────────────────── -->
 @if (staffConfirmOpen()) {
-  <div class="overlay" role="dialog" aria-modal="true" aria-labelledby="dlg-staff-confirm-title" (click)="closeStaffConfirm()">
+  <div
+    class="overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dlg-staff-confirm-title"
+    (click)="closeStaffConfirm()"
+  >
     <div class="dialog" (click)="$event.stopPropagation()">
       <button class="dialog-close-btn" (click)="closeStaffConfirm()" aria-label="ปิด">✕</button>
       <h2 id="dlg-staff-confirm-title" class="dialog-title">ยืนยันการกำหนดเจ้าหน้าที่</h2>
-      <p class="dialog-desc">เวร <strong>{{ selectedShiftName() }}</strong></p>
+      <p class="dialog-desc">
+        เวร <strong>{{ selectedShiftName() }}</strong>
+      </p>
 
       @if (staffToAdd().length > 0) {
         <div class="diff-section">
@@ -676,8 +908,12 @@
         </div>
       }
 
-      @if (staffToAdd().length === 0 && staffToRemove().length === 0 && staffUnchanged().length === 0) {
-        <p class="dialog-desc" style="color: var(--c-light); font-style: italic;">ไม่มีเจ้าหน้าที่ (จะล้างข้อมูล)</p>
+      @if (
+        staffToAdd().length === 0 && staffToRemove().length === 0 && staffUnchanged().length === 0
+      ) {
+        <p class="dialog-desc" style="color: var(--c-light); font-style: italic">
+          ไม่มีเจ้าหน้าที่ (จะล้างข้อมูล)
+        </p>
       }
       <div class="dialog-actions">
         <button class="btn-confirm-action" (click)="saveStaffAssignment()">ยืนยัน</button>
@@ -687,28 +923,44 @@
   </div>
 }
 
-
-
 @if (allToasts().length > 0) {
   <div class="dialog-toasts" aria-live="polite" aria-atomic="false">
     @for (t of allToasts(); track t.id) {
       @if (t.kind === 'incident') {
         <div class="dialog-toast toast-incident">
           <button class="toast-close" (click)="dismissToast(t.id)" aria-label="ปิด">✕</button>
-          <div class="toast-header">{{ t.own ? 'คุณได้บันทึกเหตุสำเร็จ' : 'ผู้ใช้งานอื่น บันทึกเหตุสำเร็จ' }}</div>
-          <div class="toast-detail-row"><span class="toast-label">ประเภท</span><span>{{ t.incType }}</span></div>
+          <div class="toast-header">
+            {{ t.own ? 'คุณได้บันทึกเหตุสำเร็จ' : 'ผู้ใช้งานอื่น บันทึกเหตุสำเร็จ' }}
+          </div>
+          <div class="toast-detail-row">
+            <span class="toast-label">ประเภท</span><span>{{ t.incType }}</span>
+          </div>
           @if (t.subtype) {
-            <div class="toast-detail-row"><span class="toast-label">ช่องทาง</span><span>{{ t.subtype }}</span></div>
+            <div class="toast-detail-row">
+              <span class="toast-label">ช่องทาง</span><span>{{ t.subtype }}</span>
+            </div>
           }
           @if (t.level) {
-            <div class="toast-detail-row"><span class="toast-label">ระดับ</span><span>{{ t.level }}</span></div>
+            <div class="toast-detail-row">
+              <span class="toast-label">ระดับ</span><span>{{ t.level }}</span>
+            </div>
           }
           <div class="toast-time">{{ t.time }}</div>
         </div>
       } @else {
-        <div class="dialog-toast" [class.toast-add]="t.type === 'add'" [class.toast-remove]="t.type === 'remove'">
+        <div
+          class="dialog-toast"
+          [class.toast-add]="t.type === 'add'"
+          [class.toast-remove]="t.type === 'remove'"
+        >
           <button class="toast-close" (click)="dismissToast(t.id)" aria-label="ปิด">✕</button>
-          <div class="toast-header">{{ t.own ? ('คุณ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ') : ('ผู้ใช้งานอื่น ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ') }}</div>
+          <div class="toast-header">
+            {{
+              t.own
+                ? 'คุณ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ'
+                : 'ผู้ใช้งานอื่น ' + (t.type === 'add' ? 'เพิ่ม' : 'ลบ') + 'รายชื่อดังนี้สำเร็จ'
+            }}
+          </div>
           @for (name of t.names; track name) {
             <div class="toast-name">{{ name }}</div>
           }
@@ -720,17 +972,33 @@
 }
 
 <button class="btn-history" (click)="openHistoryDialog()" aria-label="ดูประวัติบันทึกเหตุ">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-    <polyline points="12 8 12 12 14 14"/>
-    <path d="M3.05 11a9 9 0 1 1 .5 4"/>
-    <polyline points="3 7 3 11 7 11"/>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <polyline points="12 8 12 12 14 14" />
+    <path d="M3.05 11a9 9 0 1 1 .5 4" />
+    <polyline points="3 7 3 11 7 11" />
   </svg>
 </button>
 
 <button class="btn-info" (click)="openInfoDialog()" aria-label="ข้อมูลและวิธีใช้งาน">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-  <circle cx="12" cy="12" r="10"/>
-  <line x1="12" y1="10" x2="12" y2="17"/>
-  <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"/>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="10" x2="12" y2="17" />
+    <circle cx="12" cy="7" r="1" fill="currentColor" stroke="none" />
   </svg>
 </button>

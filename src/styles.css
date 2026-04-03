@@ -1,6 +1,8 @@
 /* Sarabun loaded via <link> in index.html */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   font-family: 'Sarabun', sans-serif;
 }
 
@@ -8,33 +10,33 @@
 tui-calendar {
   --tui-background-base: #e8f8ff;
   --tui-background-base-alt: #caf0f8;
-  --tui-background-neutral-1: #ADE8F4;
-  --tui-background-neutral-1-hover: #90E0EF;
-  --tui-text-primary: #023E8A;
-  --tui-text-secondary: #0077B6;
-  --tui-border-normal: #48CAE4;
-  --tui-status-info: #0096C7;
+  --tui-background-neutral-1: #ade8f4;
+  --tui-background-neutral-1-hover: #90e0ef;
+  --tui-text-primary: #023e8a;
+  --tui-text-secondary: #0077b6;
+  --tui-border-normal: #48cae4;
+  --tui-status-info: #0096c7;
   --tui-status-info-pale: rgba(0, 150, 199, 0.15);
   font-family: 'Sarabun', 'Segoe UI', sans-serif;
   font-size: 0.92rem;
 }
 
-tui-primitive-calendar [tuiDay][data-bdd-state="today"] {
-  border-color: #0096C7;
-  color: #0096C7;
+tui-primitive-calendar [tuiDay][data-bdd-state='today'] {
+  border-color: #0096c7;
+  color: #0096c7;
   font-weight: 700;
 }
 
-tui-primitive-calendar [tuiDay][data-bdd-state="active"],
-tui-primitive-calendar [tuiDay][data-bdd-state="active"]:hover {
-  background: #0077B6 !important;
+tui-primitive-calendar [tuiDay][data-bdd-state='active'],
+tui-primitive-calendar [tuiDay][data-bdd-state='active']:hover {
+  background: #0077b6 !important;
   color: #fff;
   font-weight: 700;
 }
 
 tui-dropdown:has(tui-calendar) {
   --tui-radius-m: 18px;
-  --tui-border-normal: #48CAE4;
+  --tui-border-normal: #48cae4;
   --tui-shadow-medium: 0 8px 32px rgba(0, 119, 182, 0.25);
 }
 
@@ -42,22 +44,25 @@ tui-dropdown:has(tui-calendar) {
   display: none;
 }
 
-.date-picker [tuiAppearance][data-appearance=textfield]:hover {
-  outline: 0.125rem solid #00B4D8;
+.date-picker [tuiAppearance][data-appearance='textfield']:hover {
+  outline: 0.125rem solid #00b4d8;
   outline-offset: -0.125rem;
 }
 
-.date-picker [tuiAppearance][data-appearance=textfield][data-focus=true] {
-  outline: 0.125rem solid #00B4D8;
+.date-picker [tuiAppearance][data-appearance='textfield'][data-focus='true'] {
+  outline: 0.125rem solid #00b4d8;
   outline-offset: -0.125rem;
   box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.25);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -68,7 +73,10 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
 }
 

@@ -13,6 +13,6 @@ export class Layout {
   readonly activeOptions = { exact: true };
 
   toggleSidebar(): void {
-    this.sidebarOpen.update(v => !v);
+    this.sidebarOpen.update((v) => !v);
   }
 }
