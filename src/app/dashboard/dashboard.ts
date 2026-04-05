@@ -52,7 +52,7 @@ function toShiftMinutes(time: string): number {
     NgOptimizedImage,
   ],
   providers: [
-    tuiDateFormatProvider({ mode: 'DMY', separator: '/' }),
+    tuiDateFormatProvider({ mode: 'dd/mm/yyyy', separator: '/' }),
     {
       provide: TUI_MONTHS,
       useValue: of([
