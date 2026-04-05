@@ -21,7 +21,6 @@ import {
 import { TuiInputDate } from '@taiga-ui/kit';
 import { TuiInputDateDirective } from '@taiga-ui/kit/components/input-date';
 import { tuiDateFormatProvider } from '@taiga-ui/core/tokens';
-import { of } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import type {
   Rescue,
@@ -55,7 +54,7 @@ function toShiftMinutes(time: string): number {
     tuiDateFormatProvider({ mode: 'dd/mm/yyyy', separator: '/' }),
     {
       provide: TUI_MONTHS,
-      useValue: of([
+      useValue: signal([
         'มกราคม',
         'กุมภาพันธ์',
         'มีนาคม',
@@ -72,7 +71,7 @@ function toShiftMinutes(time: string): number {
     },
     {
       provide: TUI_SHORT_WEEK_DAYS,
-      useValue: of(['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'] as const),
+      useValue: signal(['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'] as const),
     },
   ],
 })

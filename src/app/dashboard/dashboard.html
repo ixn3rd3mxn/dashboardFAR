@@ -80,13 +80,8 @@
       <div class="control-group date-picker">
         <!-- <label class="control-label" for="date-input">วันที่</label> -->
         <tui-textfield [tuiTextfieldCleaner]="false" tuiTextfieldSize="s">
-          <!-- <label tuiLabel>วันที่</label> -->
-          <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" readonly />
-          <ng-template tuiTextfieldDropdown>
-            <tui-calendar [min]="minDay" [max]="maxDay">
-              <!-- <tui-calendar> -->
-            </tui-calendar>
-          </ng-template>
+          <input tuiInputDate [formControl]="dateControl" [min]="minDay" [max]="maxDay" />
+          <tui-calendar *tuiDropdown [min]="minDay" [max]="maxDay" />
         </tui-textfield>
       </div>
       <button class="btnX btn-settoday" (click)="setToday()" type="button">วันนี้</button>
